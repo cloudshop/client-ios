@@ -9,6 +9,7 @@
 #import "baseWkWebVC.h"
 #import "UserLoadViewController.h"
 #import "GDMapManager.h"
+#import <AlipaySDK/AlipaySDK.h>
 
 @interface baseWkWebVC ()
 
@@ -16,12 +17,65 @@
 @property (nonatomic,strong)NSArray *testArr;//测试url
 @property (nonatomic,assign)int currentCount;//定时器计数
 @property (nonatomic,strong)NSTimer *timer;
+
+
+//几个显示的LB
+@property (nonatomic,strong)UILabel *firstNBLB;
+@property (nonatomic,strong)UILabel *operationLB;
+@property (nonatomic,strong)UILabel *secondNBLB;
+@property (nonatomic,strong)UILabel *resultLB;
+
+
 @end
 
 #define kAlertOnlyRefresh 1990
 #define kAlertBackAndRefresh 1991
 
 @implementation baseWkWebVC
+
+
+-(void)setUI
+{
+    
+    self.firstNBLB=[[UILabel alloc]init];
+    self.firstNBLB.font=[UIFont systemFontOfSize:15];
+    self.firstNBLB.textColor=[UIColor blueColor];
+    
+    self.operationLB=[[UILabel alloc]init];
+    self.operationLB.font=[UIFont systemFontOfSize:15];
+    self.operationLB.textColor=[UIColor redColor];
+    
+    
+    self.secondNBLB=[[UILabel alloc]init];
+    self.secondNBLB.font=[UIFont systemFontOfSize:15];
+    self.secondNBLB.textColor=[UIColor blueColor];
+    
+    self.resultLB=[[UILabel alloc]init];
+    self.resultLB.font=[UIFont systemFontOfSize:15];
+    self.resultLB.textColor=[UIColor greenColor];
+    
+    NSArray *titlrArr=[NSArray arrayWithObjects:@"因子",@"运算",@"因子",@"结果", nil];
+    NSArray *valueArr=[NSArray arrayWithObjects:self.firstNBLB,self.operationLB,self.secondNBLB,self.resultLB ,nil];
+    for (int i=0; i<titlrArr.count; i++) {
+        UILabel *lb=[[UILabel alloc]initWithFrame:CGRectMake(20, 80+50*i, 50, 40)];
+        lb.font=[UIFont systemFontOfSize:15];
+        lb.text=titlrArr[i];
+        [self.view addSubview:lb];
+        
+        UILabel *LB=valueArr[i];
+        LB.textAlignment=NSTextAlignmentRight;
+        LB.frame=CGRectMake(30,20+50*i , 200, 40);
+        [self.view addSubview:LB];
+    }
+    self.webView.frame = CGRectMake(0, self.resultLB.frame.origin.y+50, ScreenWidth, ScreenHeight-self.resultLB.frame.origin.y-50-50);
+    [self.view addSubview:self.webView];
+    self.webView.backgroundColor = [UIColor whiteColor];
+    self.webView.opaque = NO;
+    [self.view setUserInteractionEnabled:YES];
+    [self.webView setUserInteractionEnabled:YES];
+   
+}
+
 
 -(id)init
 {
@@ -46,13 +100,18 @@
         config.userContentController = [[WKUserContentController alloc] init];
         // 注入JS对象名称AppModel，当JS通过AppModel来调用时，
         // 我们可以在WKScriptMessageHandler代理中接收到
-        [config.userContentController addScriptMessageHandler:self name:@"AppModel"];
+        [config.userContentController addScriptMessageHandler:self name:@"GongrongAppModel"];
         
 
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
         self.webView.navigationDelegate = self;
        [self.webView setHackishlyHidesInputAccessoryView:YES];
         self.URL=[[NSURL alloc]init];
+        
+        
+       
+
+        
     }
     return self;
 }
@@ -68,14 +127,16 @@
     
     [self createNavigation];
     
-    
-    self.webView.frame = CGRectMake(0, 44, ScreenWidth, ScreenHeight-44
-                                    );
+  //  [self setUI];
+    self.webView.frame = CGRectMake(0, ViewCtrlTopBarHeight, ScreenWidth, ScreenHeight-ViewCtrlTopBarHeight);
     [self.view addSubview:self.webView];
     self.webView.backgroundColor = kAppColor8;
     self.webView.opaque = NO;
     [self.view setUserInteractionEnabled:YES];
     [self.webView setUserInteractionEnabled:YES];
+    
+    
+   
     
     self.urlsArr=[[NSMutableArray alloc]init];
     
@@ -83,7 +144,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-//    NSString *path=[[NSBundle mainBundle] pathForResource:@"test" ofType:@"html"];
+//    NSString *path=[[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
 //    NSString *htmlString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 //    [self.webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:path]];
     
@@ -96,6 +157,20 @@
      
      [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
      */
+}
+-(void)clearJsFunction
+{//
+    
+    //javaScriptString是JS方法名，completionHandler是异步回调block
+    [self.webView evaluateJavaScript:@"addParam(111)" completionHandler:^(id  result,NSError *error){
+        NSLog(@"%@",error);
+        if (!error) {
+            self.firstNBLB.text=nil;
+            self.secondNBLB.text=nil;
+            self.operationLB.text=nil;
+            self.resultLB.text=nil;
+        }
+    }];
 }
 -(void)loadNewUrl
 {
@@ -182,9 +257,9 @@
     [SVProgressHUD show];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:self.URL];
     request.cachePolicy=NSURLRequestReloadIgnoringLocalCacheData;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+   // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
      [self.webView loadRequest:request];
-    });
+   // });
     // [self.webView loadRequest:[NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://www.baidu.com"]]];
 }
 
@@ -392,6 +467,13 @@
              [self.viewNaviBar setTitle:self.webView.title ];
         }
     }
+//    [webView evaluateJavaScript:@"addParam('1')" completionHandler:^(id  result,NSError *error){
+//        NSLog(@"error%@",error);
+//        NSLog(@"result%@",result);
+//        if (!error) {
+//
+//        }
+//    }];
 }
 
 #pragma mark 页面加载失败时调用
@@ -447,14 +529,17 @@
 {
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
     NSLog(@"JS 调用了 %@ 方法，传回参数 %@",message.name,message.body);
-    if ([message.name isEqualToString:FunctionNameTag]) {
+    if ([message.name isEqualToString:JSModel]) {
         NSDictionary *dic=(NSDictionary *)message.body;
-        if ([dic[@"functionName"] isEqualToString:@"FunctionName"]) {
-            NSString *praInfo=dic[@"praInfo"];
-            [self showToast:@"登录成功"];
-            [self.navigationController popToRootViewControllerAnimated:YES];
-            [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@YES];
-            
+        
+        if ([dic[@"func"] isEqualToString:JSFuncPayTag]) {
+            if ([dic[JSPayType] isEqualToString:JSPay_Ali]) {
+                [[AlipaySDK defaultService] payOrder:dic[@"orderStr"] fromScheme:@"AliPayGongrongScheme" callback:^(NSDictionary *resultDic) {
+                    LRLog(@"reslut = %@",resultDic);
+                    // [self getAliPayBackData:resultDic];
+                }];
+            }
+           
         }
         else if([dic[@"functionName"] isEqualToString:@"result"])
         {

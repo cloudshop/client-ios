@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GongRong.pch"
 
-#import <GTSDK/GeTuiSdk.h>
+//#import <GTSDK/GeTuiSdk.h>
 
 #if GR_GETUI
 
@@ -56,9 +56,9 @@
 @property (strong, nonatomic) NSString *appSecret;
 @property (strong, nonatomic) NSString *appID;
 @property (strong, nonatomic) NSString *deviceToken;
-@property (strong, nonatomic) GeTuiSdk *gexinPusher;
+//@property (strong, nonatomic) GeTuiSdk *gexinPusher;
 @property (strong, nonatomic) NSString *clientId;
-@property (assign, nonatomic) SdkStatus sdkStatus;
+//@property (assign, nonatomic) SdkStatus sdkStatus;
 @property (assign, nonatomic) int lastPayloadIndex;
 @property (strong, nonatomic) NSString *payloadId;
 @property (strong, nonatomic) NSDictionary *dataDic;

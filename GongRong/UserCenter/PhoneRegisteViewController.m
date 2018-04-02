@@ -60,11 +60,14 @@
    
    
     isAgreeProtocal = YES;
-    [self craeteScrollerView];
-    [self initRegisteInfo];
-    [self createBackground];
+//    [self craeteScrollerView];
+//    [self initRegisteInfo];
+//    [self createBackground];
     
-	// Do any additional setup after loading the view.
+    NSMutableDictionary *dic=[NSMutableDictionary dictionaryWithDictionary: @{@"login":@"111",@"password":@"123456"}];
+    HttpBaseRequest *request=[[HttpBaseRequest alloc]initWithDelegate:self];
+   
+    [request initRequestComm:dic withURL:USER_REGISTER operationTag:USERREGISTER];
 }
 
 -(void)craeteScrollerView

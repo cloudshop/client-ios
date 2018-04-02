@@ -514,8 +514,11 @@
     // 默认左侧显示返回按钮
     _btnLeft = [UIButton buttonWithType:UIButtonTypeCustom];
     [_btnLeft.titleLabel setTextAlignment:NSTextAlignmentCenter];
-    [_btnLeft.titleLabel setFont:[UIFont boldSystemFontOfSize:FLOAT_TitleSizeMid]];
+    [_btnLeft.titleLabel setFont:[UIFont boldSystemFontOfSize:FLOAT_TitleSizeMini]];
     [_btnLeft setTitleColor:kAppColor5 forState:UIControlStateNormal];
+    //_btnLeft.titleLabel.adjustsFontSizeToFitWidth = YES;
+   // _btnLeft.titleLabel.numberOfLines=3;
+    _btnLeft.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -10);
     _btnLeft.autoresizingMask = UIViewAutoresizingNone;
     
     // 默认右侧按钮

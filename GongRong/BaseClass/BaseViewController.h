@@ -17,7 +17,7 @@
 #import "UtilityFunc.h"
 #import "UIImageView+WebCache.h"
 
-@interface BaseViewController : UIViewController
+@interface BaseViewController : UIViewController<HttpRequestCommDelegate>
 
 @property (nonatomic, strong) CustomNaviBarView *viewNaviBar;
 

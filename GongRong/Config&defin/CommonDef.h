@@ -67,6 +67,8 @@
 #define kSignSuccessNotification @"kSignSuccessNotification"
 
 
+
+
 //提示语 TEXT
 #define NO_DATA_TEXT @"已经到底了!"
 #define NO_NETWORK_TEXT @"网络连接异常，请检查网络!"
@@ -231,6 +233,10 @@ blue:((float)(hexValue & 0xFF))/255.0 alpha:1.0]
 
 #define Is4Inch                                 [UtilityFunc is4InchScreen]
 #define RGB_TextDark                            RGB(10.0f, 10.0f, 10.0f)
+
+
+
+
 
 #ifdef GR_DEBUG
 #define LRString [NSString stringWithFormat:@"%s", __FILE__].lastPathComponent

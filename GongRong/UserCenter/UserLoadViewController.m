@@ -18,7 +18,7 @@
 #import "WGPublicData.h"
 #import "ForgetPwdViewController.h"
 #import "PhoneRegisteViewController.h"
-
+#import "GRRegisterVC.h"
 #import "GetuiManager.h"
 #import "TYWebVC.h"
 
@@ -67,7 +67,7 @@ enum
     //self.viewNaviBar.backgroundColor=kAppColor1;
     [self.viewNaviBar setLogInMode];
     self.viewNaviBar.hidden=NO;
-    self.viewNaviBar.m_btnBack.hidden=YES;
+   // self.viewNaviBar.m_btnBack.hidden=YES;
     
     /*
     UIButton *backBT=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -177,7 +177,12 @@ enum
     pwdField.left=passwordIcon.right+8;
     passwordView.top=viewStartH;
     
-    
+    checkPWBT=[UIButton buttonWithType:UIButtonTypeCustom];
+    [checkPWBT setImage:[UIImage imageNamed:@"hiddenPWIMG"] forState:UIControlStateNormal];
+    [checkPWBT setImage:[UIImage imageNamed:@"checkPWIMG"] forState:UIControlStateSelected];
+    checkPWBT.frame=Rect(pwdField.right, pwdField.top+10, 25, 20);
+    [passwordView addSubview:checkPWBT];
+    [checkPWBT addTarget:self action:@selector(checkPasswordBT:) forControlEvents:UIControlEventTouchUpInside];
     
     viewStartH+=50+25;
     
@@ -384,6 +389,18 @@ enum
 //    [self.navigationController pushViewController:WebViewVC animated:YES];
     
 }
+-(void)checkPasswordBT:(UIButton *)sender
+{
+    sender.selected=!sender.selected;
+    if (sender.selected) {
+        pwdField.secureTextEntry=NO;
+    }
+    else
+    {
+        pwdField.secureTextEntry=YES;
+    }
+    
+}
 - (void)forgetPassword:(id)sender
 {
 
@@ -578,7 +595,9 @@ enum
 -(void)userRegiste:(id)sender
 {
    // WGRegisterViewController *phoneRegisteCon = [[WGRegisterViewController alloc] init];
-    PhoneRegisteViewController *pvc=[[PhoneRegisteViewController alloc]init];
+  //  PhoneRegisteViewController *pvc=[[PhoneRegisteViewController alloc]init];
+    
+    GRRegisterVC *pvc=[[GRRegisterVC alloc]init];
     [self.navigationController pushViewController:pvc animated:YES];
 }
 

@@ -10,11 +10,15 @@
 #import "MainTabBarController.h"
 #import "WGPublicData.h"
 #import "WGLocationManager.h"
+#import "SharedUserDefault.h"
 #import "HomeVC.h"
 #import "HomeWKWebVC.h"
 #import "ClassifyVC.h"
 #import "baseWkWebVC.h"
 #import "UserLoadViewController.h"
+#import <AlipaySDK/AlipaySDK.h>
+#import <WechatOpenSDK/WXApi.h>
+#import <IQKeyboardManager/IQKeyboardManager.h>
 
 #pragma mark 极光
 // 引入JPush功能所需头文件
@@ -26,8 +30,10 @@
 
 
 
-@interface AppDelegate ()<JPUSHRegisterDelegate>
-
+@interface AppDelegate ()<JPUSHRegisterDelegate,UIScrollViewDelegate>
+@property (nonatomic,strong)NSArray *array;
+@property (nonatomic,strong)UIScrollView *scrollView;
+@property (strong,nonatomic) UIPageControl *pageControl;
 @end
 
 @implementation AppDelegate
@@ -64,7 +70,13 @@
     
     ClassifyVC *vc2=[[ClassifyVC alloc]init];
     [vc1 setUrl:@"http://192.168.1.102:8080/#/HomePage"];
-    [vc2 setUrl:@"http://www.baidu.com"];
+    [vc2 setUrl:@"http://192.168.1.102:8080/#/Classify"];
+    
+    baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
+    [vc3 setUrl:@"http://192.168.1.102:8080/#/Shopping"];
+    
+//    baseWkWebVC *vc4=[[baseWkWebVC alloc]init];
+//    [vc4 setUrl:@"http://192.168.1.102:8080/#/Mine"];
     /*
     HomeVC *vc2=[[HomeVC alloc] init];
     ViewController *vc3=[[ViewController alloc]init];
@@ -74,10 +86,10 @@
     nav1.navigationBarHidden=YES;
     UINavigationController *nav2=[[UINavigationController alloc]initWithRootViewController:vc2];
     nav2.navigationBarHidden=YES;
-    /*
+    
     UINavigationController *nav3=[[UINavigationController alloc]initWithRootViewController:vc3];
     nav3.navigationBarHidden=YES;
-     */
+    
     UINavigationController *nav4=[[UINavigationController alloc]initWithRootViewController:vc4];
     nav4.navigationBarHidden=YES;
     
@@ -96,7 +108,8 @@
    // [ConUtils createFilterListPlistFile];
    // [[WGPublicData sharedInstance] clearLoginInfo];
     
-    
+#pragma mark 初始化IQKeyboardManager
+    [self setUpIQKeyBordManager];
 #pragma mark 极光初始化
     JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
     entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
@@ -107,10 +120,8 @@
     }
     [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
     
-    
-   
-    
-    
+#pragma mark 首次启动引导
+    [self  cheackFirstStart];
   
     //建立相册文件
     NSString *imageDocPath = [FILE_PATH stringByAppendingPathComponent:@"MinePhoto"];
@@ -153,7 +164,130 @@
     
     return YES;
 }
+-(void)cheackFirstStart
+{
+    if ([[SharedUserDefault sharedInstance] isFirstStartApp] == nil ||
+        [[[SharedUserDefault sharedInstance] isFirstStartApp] isEqualToString:@"Y"])
+    {
+       
+        _array = [NSArray arrayWithObjects:@"guide640x1280_01",@"guide640x1280_02",@"guide640x1280_03",nil];
+        
+        _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+        _scrollView.backgroundColor=[UIColor whiteColor];
+        _scrollView.contentSize = CGSizeMake(ScreenWidth * 3, ScreenHeight);
+        _scrollView.delegate = self;
+        _scrollView.bounces = NO;
+        _scrollView.pagingEnabled = YES;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        [self.window addSubview:_scrollView];
+       
+        [self initScrollViewContent];
+        
+    }
+}
 
+- (void)initScrollViewContent
+{
+    for (int i=0; i<3; i++)
+    {
+        UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(ScreenWidth*i, 0, ScreenWidth, ScreenHeight)];
+        img.userInteractionEnabled = YES;
+        [img setBackgroundColor:[UIColor clearColor]];
+        NSString *path = [[NSBundle mainBundle] pathForResource:[_array objectAtIndex:i] ofType:@"jpg"];
+        [img setImage:[UIImage imageWithContentsOfFile:path]];
+        // img.image=[UIImage imageNamed:[_array objectAtIndex:i]];
+        img.contentMode=UIViewContentModeScaleAspectFill;
+        img.clipsToBounds=YES;
+        [img setUserInteractionEnabled:YES];
+        [_scrollView addSubview:img];
+        if (i == 2) {
+            UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake((ScreenWidth-143)/2, ScreenHeight-85-34, 143, 34)];
+            label.font=[UIFont systemFontOfSize:18];
+            label.backgroundColor=UIColorWithHex(0xfa7b14);
+            label.text=@"立即体验";
+            label.textColor=[UIColor whiteColor];
+            label.textAlignment=NSTextAlignmentCenter;
+            [img addSubview:label];
+            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+            [img addGestureRecognizer:tapGesture];
+        }
+    }
+    
+    _pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake((ScreenWidth-100)/2, ScreenHeight-80, 100, 30)];
+    //页数
+    _pageControl.currentPage=0;
+    _pageControl.numberOfPages = 3;
+    
+    // [pageControl addTarget:self action:@selector(dealPageControl:) forControlEvents:UIControlEventValueChanged];
+    
+    [self.window addSubview:_pageControl];
+//    [self.view bringSubviewToFront:_scrollView];
+//    [self.view bringSubviewToFront:_pageControl];
+    
+}
+-(void)dealPageControl:(UIPageControl *)pc
+{
+    double x = ScreenWidth * pc.currentPage;
+    _scrollView.contentOffset = CGPointMake(x, 0);
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)ScrollView
+{
+    // [super scrollViewDidScroll:ScrollView];
+    
+    if (ScrollView == _scrollView) {
+        float index =_scrollView.contentOffset.x / ScreenWidth;
+        _pageControl.currentPage = (NSInteger)(index+0.5);
+    }
+}
+
+- (void)tapAction:(UITapGestureRecognizer *)tapGesture
+{
+    [[SharedUserDefault sharedInstance] setFirstStartApp:@"N"];
+    //[self dismissViewControllerAnimated:YES completion:nil];
+    [_scrollView removeFromSuperview];
+    [_pageControl removeFromSuperview];
+    _scrollView = nil;
+    _pageControl = nil;
+  
+}
+-(void)setUpIQKeyBordManager
+{
+    IQKeyboardManager *keyboardManager = [IQKeyboardManager sharedManager]; // 获取类库的单例变量
+    
+    keyboardManager.enable = YES; // 控制整个功能是否启用
+    
+    keyboardManager.shouldResignOnTouchOutside = YES; // 控制点击背景是否收起键盘
+    
+    keyboardManager.shouldToolbarUsesTextFieldTintColor = YES; // 控制键盘上的工具条文字颜色是否用户自定义
+    
+    keyboardManager.toolbarManageBehaviour = IQAutoToolbarBySubviews; // 有多个输入框时，可以通过点击Toolbar 上的“前一个”“后一个”按钮来实现移动到不同的输入框
+    
+    keyboardManager.enableAutoToolbar = YES; // 控制是否显示键盘上的工具条
+    
+    keyboardManager.shouldShowToolbarPlaceholder = YES; // 是否显示占位文字
+    
+    keyboardManager.placeholderFont = [UIFont boldSystemFontOfSize:17]; // 设置占位文字的字体
+    
+    keyboardManager.keyboardDistanceFromTextField = 10.0f; // 输入框距离键盘的距离
+    
+ 
+}
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    
+    if ([url.absoluteString rangeOfString:@"pay"].location == NSNotFound) {
+       // [JSHAREService handleOpenUrl:url];
+    }
+    
+    if ([url.host isEqualToString:@"safepay"]) {
+        //跳转支付宝钱包进行支付，处理支付结果
+        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"kAliPayCallBack" object:resultDic];
+        }];
+        return YES;
+    }
+    return [WXApi handleOpenURL:url delegate:self];
+}
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     

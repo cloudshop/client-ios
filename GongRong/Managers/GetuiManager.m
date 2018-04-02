@@ -70,6 +70,7 @@
 
 - (void)startSdkWith:(NSString *)appID appKey:(NSString *)appKey appSecret:(NSString *)appSecret target:(id)target
 {
+    /*
     if (!_gexinPusher)
     {
         _sdkStatus = SdkStatusStoped;
@@ -90,24 +91,26 @@
             _sdkStatus = SdkStatusStarting;
         }
     }
+     */
 }
 
 - (void)stopSdk
 {
-    if (_gexinPusher)
-    {
-       // [_gexinPusher destroy];
-        _gexinPusher = nil;
-        _clientId = nil;
-        _sdkStatus = SdkStatusStoped;
-    }
+//    if (_gexinPusher)
+//    {
+//       // [_gexinPusher destroy];
+//        _gexinPusher = nil;
+//        _clientId = nil;
+//        _sdkStatus = SdkStatusStoped;
+//    }
 }
 
 - (BOOL)checkSdkInstance
 {
-    if (!_gexinPusher) {
-        return NO;
-    }
+//    if (!_gexinPusher) {
+//        return NO;
+//    }
+//    return YES;
     return YES;
 }
 
@@ -117,7 +120,7 @@
         return;
     }
     _deviceToken = [aToken copy];
-    [GeTuiSdk registerDeviceToken:aToken];
+ //   [GeTuiSdk registerDeviceToken:aToken];
 }
 
 - (BOOL)setTags:(NSArray *)aTags error:(NSError **)error
@@ -126,7 +129,8 @@
         return NO;
     }
     
-    return [GeTuiSdk setTags:aTags];
+  //  return [GeTuiSdk setTags:aTags];
+    return YES;
 }
 
 @end

@@ -260,7 +260,7 @@
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"DELETE" URLString:URLString parameters:parameters uploadProgress:nil downloadProgress:nil success:success failure:failure];
 
     [dataTask resume];
-
+  
     return dataTask;
 }
 
@@ -274,6 +274,7 @@
 {
     NSError *serializationError = nil;
     NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:&serializationError];
+    NSLog(@"AFNnetwork'log:URL:%@\n参数:%@",request.URL,[[ NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding]);
     if (serializationError) {
         if (failure) {
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{

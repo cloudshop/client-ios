@@ -13,9 +13,10 @@
 #if GR_DEBUG
 
 //测试服务器地址
-//#define BASEURLPATH @"https://weixin.wizsharing.com/m/"
-//#define BASEURLPATH @"http://192.168.1.105:8103/"  //迎新电脑
-#define BASEURLPATH  @"http://121.168.1.102:8000"//建文电脑
+//#define BASEURLPATH @"http://192.168.1.10:9080/"
+#define BASEURLPATH @"http://192.168.1.105:8116/"  //迎新电脑
+//#define BASEURLPATH  @"http://121.168.1.102:8000"//建文电脑
+//#define BASEURLPATH  @"http://192.168.1.96:9080/"//国文电脑电脑
 
 //#define FILESERVER @"http://106.3.78.236:8086/fileserver"//图片文件服务器
 #define FILESERVER  @"http://leifeng365.oss-cn-shanghai.aliyuncs.com"
@@ -79,8 +80,8 @@
 
 #define USER_LOGOUT @"user/logout" //退出登入
 //#define USER_REGISTER @"/mobileUser/register.cmd" //用户注册
-#define USER_REGISTER @"user/register"//注册
-#define USER_SMSCODE @"sms/initSmsCode" //用户通过手机号获取验证码
+#define USER_REGISTER @"uaa/api/register"//注册
+#define USER_SMSCODE @"verify/api/verify/smscode" //用户通过手机号获取验证码
 #define User_Modify_Phone @"user/modify_phone_code"//变更手机号 获取验证码
 #define User_Verify_phone @"user/verify_phone" //变更手机号
 

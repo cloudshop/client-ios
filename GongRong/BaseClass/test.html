@@ -34,7 +34,11 @@
         
         window.webkit.messageHandlers.AppModel.postMessage({body: 'call js alert in js'});
       }
-    
+    function OOOtest()
+    {
+        document.getElementById('jsParamFuncSpan').innerHTML
+        = 'false';
+    }
     function callJsConfirm() {
       if (confirm('confirm', 'Objective-C call js to show confirm')) {
         document.getElementById('jsParamFuncSpan').innerHTML
@@ -54,6 +58,10 @@
       
        // AppModel是我们所注入的对象
       window.webkit.messageHandlers.AppModel.postMessage({body: response});
+    }
+    function getUserInfor(){
+        
+        
     }
       </script>
   </body>

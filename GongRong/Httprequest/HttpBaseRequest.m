@@ -95,7 +95,104 @@ static HttpBaseRequest *baseRequest ;
     
     
 }
-
+//网络请求body使用Json实现方法
+-(void)initRequestJsonComm:(NSMutableDictionary *) params withURL:(NSString *) subUrl operationTag:(NSInteger ) tag {
+    
+    AFHTTPSessionManager *manager = [TYHttpSessionManger shareInstance];
+    
+    NSString *urlStr =@"" ;
+    if(tag>=SETWALLETPASSWORLD)
+    {
+       
+        urlStr=[NSString stringWithFormat:@"%@%@", BASEWALLETSERVER, subUrl];
+       
+    }
+    else
+    {
+        urlStr=[NSString stringWithFormat:@"%@%@", BASEURLPATH, subUrl];
+    }
+    NSURL *url=[NSURL URLWithString:urlStr];
+    
+    NSString *token=[[SharedUserDefault sharedInstance]getUserToken];
+    if (token) {
+        [params setObject:token forKey:@"token"];
+    }
+    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:url.absoluteString parameters:params error:nil];
+    request.timeoutInterval = 10.f;
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+  
+    NSURLSessionDataTask *task = [manager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        NSLog(@"-----responseObject===%@+++++",responseObject);
+        if (!error) {
+            self.reTag = tag ;
+            NSDictionary *dic = responseObject;
+            if (!dic) {
+                if(self.delegate&&[self.delegate respondsToSelector:@selector(httpRequestSuccessComm:withInParams:)])
+                    [self.delegate httpRequestFailueComm:tag withInParams:@"数据异常"];
+                return ;
+            }
+            if (![dic isKindOfClass:[NSDictionary class]]) {
+                dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+            }
+            
+            NSLog(@"%@",dic);
+            if (dic &&[dic isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *resultt=[dic objectForKey:@"result"];
+                if (resultt) {
+                    if ([[resultt objectForKey:@"code"] intValue]==-2) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_TokenInvalid object:nil];
+                    }
+                }
+            }
+            if(self.delegate&&[self.delegate respondsToSelector:@selector(httpRequestSuccessComm:withInParams:)])
+                [self.delegate httpRequestSuccessComm:tag withInParams:dic];
+        } else {
+            NSLog(@"请求失败error=%@", error);
+            if(self.delegate&&[self.delegate respondsToSelector:@selector(httpRequestFailueComm:withInParams:)])
+                [self.delegate httpRequestFailueComm:tag withInParams:[error description]];
+        }
+    }];
+    
+    [task resume];
+    
+   
+    
+    /*
+    
+    [manager POST:url.absoluteString parameters:params progress:nil success:^(NSURLSessionTask *task, id responseObject){
+        self.reTag = tag ;
+        NSDictionary *dic = responseObject;
+        if (!dic) {
+            if(self.delegate&&[self.delegate respondsToSelector:@selector(httpRequestSuccessComm:withInParams:)])
+                [self.delegate httpRequestFailueComm:tag withInParams:@"数据异常"];
+            return ;
+        }
+        if (![dic isKindOfClass:[NSDictionary class]]) {
+            dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+        }
+        
+        NSLog(@"%@",dic);
+        if (dic &&[dic isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *resultt=[dic objectForKey:@"result"];
+            if (resultt) {
+                if ([[resultt objectForKey:@"code"] intValue]==-2) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_TokenInvalid object:nil];
+                }
+            }
+        }
+        if(self.delegate&&[self.delegate respondsToSelector:@selector(httpRequestSuccessComm:withInParams:)])
+            [self.delegate httpRequestSuccessComm:tag withInParams:dic];
+    }
+          failure:^(NSURLSessionTask *operation, NSError *error) {
+              if(self.delegate&&[self.delegate respondsToSelector:@selector(httpRequestFailueComm:withInParams:)])
+                  [self.delegate httpRequestFailueComm:tag withInParams:[error description]];
+              
+          }];
+    */
+    
+}
 //网络请求实现方法
 -(void)initRequestComm:(NSMutableDictionary *) params withURL:(NSString *) subUrl operationTag:(NSInteger ) tag {
     

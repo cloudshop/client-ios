@@ -29,6 +29,8 @@
 -(HttpBaseRequest *)initWithDelegate:(id) own ;
 //网络GET请求实现方法
 -(void)initGetRequestComm:(NSMutableDictionary *) params withURL:(NSString *) subUrl operationTag:(NSInteger ) tag;
+//网络请求body使用Json实现方法
+-(void)initRequestJsonComm:(NSMutableDictionary *) params withURL:(NSString *) subUrl operationTag:(NSInteger ) tag ;
 //网络请求实现方法
 -(void)initRequestComm:(NSMutableDictionary *) params withURL:(NSString *) subUrl operationTag:(NSInteger ) tag ;
 //带上传的网络请求实现方法

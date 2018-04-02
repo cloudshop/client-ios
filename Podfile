@@ -18,6 +18,7 @@ def shared_pods
     pod 'AMap2DMap' #2D地图SDK (2D和3D不能同时使用)
     pod 'AMapSearch' #搜索功能
     pod 'JPush' #极光
+    #  pod 'SwaggerClient', :git => 'https://github.com/GIT_USER_ID/GIT_REPO_ID.git'
 end
 
 
