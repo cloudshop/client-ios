@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1572281C8D30093DCA3B4173543115AD"
+               BlueprintIdentifier = "206769ABC0375242000DECE661F272AC"
                BlueprintName = "Pods-GongRongPoints"
                ReferencedContainer = "container:Pods.xcodeproj"
                BuildableName = "libPods-GongRongPoints.a">
