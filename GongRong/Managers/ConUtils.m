@@ -602,22 +602,31 @@
     return [returnStr stringByReplacingOccurrencesOfString:@"\\r\\n"withString:@"\n"];
 }
 /*
- *url参数解析 [{key:username,Value:王不二},{}]
+ *url参数解析 [{key:username,Value:王不二},{key:password,Value:12345}]
  */
-+(NSMutableArray *)formatParamWithParamStr:(NSString *)paramStr
++(NSMutableDictionary *)formatParamWithParamStr:(NSString *)paramStr
 {
     NSMutableArray *arr=[[NSMutableArray alloc]init];
-    NSArray *oneArr=[paramStr componentsSeparatedByString:@"&"];
-    for (int i=0; i<oneArr.count; i++) {
-        NSString *towStr=oneArr[i];
+    NSArray *oneArr=[paramStr componentsSeparatedByString:@"?"];
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+
+    if (oneArr.count>1) {
+    
+        NSString *realParamsStr=oneArr[1];
+        NSArray *key_ValueArr=[realParamsStr componentsSeparatedByString:@"&"];
+                for (int i=0; i<key_ValueArr.count; i++) {
+        NSString *towStr=key_ValueArr[i];
         NSArray *towArr=[towStr componentsSeparatedByString:@"="];
-        NSMutableDictionary *dic=[[NSMutableDictionary alloc]initWithObjectsAndKeys:towArr[0],@"key",towArr[1],@"value",nil];
-        [arr addObject:dic];
+            
+        //NSMutableDictionary *dic=[[NSMutableDictionary alloc]initWithObjectsAndKeys:towArr[0],@"key",towArr[1],@"value",nil];
+            [dic setObject:towArr[1] forKey:towArr[0]];
+       // [arr addObject:dic];
+        }
     }
-    return arr;
+    return dic;
 }
 /*
- *url参数填充 [{key:username,Value:王不二},{}]
+ *url参数填充 {key:username,Value:王不二}
  */
 +(NSMutableArray *)setParamValueWithParamStr:(NSMutableArray *)paramArr
 {

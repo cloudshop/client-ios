@@ -7,7 +7,7 @@
 
 #import "HomeVC.h"
 #import "CoderReader.h"
-
+#import "SharedUserDefault.h"
 #import <AlipaySDK/AlipaySDK.h>
 
 @interface HomeVC ()<HttpRequestCommDelegate>
@@ -111,6 +111,23 @@
     
     [self.navigationController pushViewController:wvc animated:YES];
      */
+    /*
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+    
+    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+   
+   // [request initRequestJsonComm:dic withURL:Wallets_User operationTag:WalletsUser];
+    [request initGetRequestComm:dic withURL:Wallets_User operationTag:WalletsUser];
+    [SVProgressHUD show];
+     */
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+    [dic setObject:@"1" forKey:@"payType"];
+    [dic setObject:@"0.01" forKey:@"payment"];
+    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+    
+     [request initRequestJsonComm:dic withURL:Oreder_deposit operationTag:Orederdeposit];
+   // [request initGetRequestComm:dic withURL:Wallets_User operationTag:WalletsUser];
+    [SVProgressHUD show];
 }
 -(void)setConfiguration
 {
@@ -122,9 +139,16 @@
 -(void)showCodeReader
 {
     
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+    
+    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+    [dic setObject:@"13691226692" forKey:@"username"];
+    [dic setObject:@"1234" forKey:@"password"];
+    [request initRequestJsonComm:dic withURL:USER_LOGIN operationTag:USERLOGIN];
+    [SVProgressHUD show];
+    return;
     
     CoderReader *viewController = [[CoderReader alloc] init];
-    
     viewController.hidesBottomBarWhenPushed=YES;
     [self.navigationController pushViewController:viewController animated:YES];
     
@@ -139,7 +163,48 @@
 }
 -(void)httpRequestSuccessComm:(NSInteger)tagId withInParams:(id)inParam
 {
-    
+    [SVProgressHUD dismiss];
+    BaseResponse *res=[[BaseResponse alloc]init];
+    [res setHeadData:inParam];
+    switch (tagId) {
+            
+        case USERLOGIN:{
+          
+            if (res.code == 0) {
+                
+                // if(loginResponse.userElement)
+                {
+                    [self showToast:@"登录成功"];
+                   
+                   NSString *token=[inParam objectForKey:@"access_token"];
+                    [[SharedUserDefault sharedInstance] setUserToken:token];
+                    [[SharedUserDefault sharedInstance] setLoginState:@"Y"];
+                  //  [self.navigationController popToRootViewControllerAnimated:YES];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@YES];
+                }
+            }else{
+               
+                NSString *returnMsg = [[inParam objectForKey:@"result"] objectForKey:@"msg"];
+                if (returnMsg == nil || [returnMsg isEqualToString:@""])
+                {
+                    [self showToast:@"网络异常，请稍后再试"];
+                }
+                else
+                {
+                    [self showToast:returnMsg];
+                }
+            }
+            
+        }
+            break;
+          case GetCitysList:
+        {
+            NSLog(@"%@",inParam);
+            
+        }break;
+        default:
+            break;
+    }
 }
 -(void)httpRequestFailueComm:(NSInteger)tagId withInParams:(NSString *)error
 {
@@ -185,8 +250,20 @@
      return;
      */
 //   [self.navigationController pushViewController:messageVC animated:YES];
-  
-   
+    
+    [[AlipaySDK defaultService] payOrder:@"alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2018032102418344&biz_content=%7B%22body%22%3A%22%E8%B4%A1%E8%9E%8D%E7%A7%AF%E5%88%86%E5%95%86%E5%9F%8E%E5%85%85%E5%80%BC%22%2C%22out_trade_no%22%3A%221201804140919612%22%2C%22passback_params%22%3A%22deposit%22%2C%22subject%22%3A%22%E5%85%85%E5%80%BC%E4%BD%99%E9%A2%9D%22%2C%22timeout_express%22%3A%2230m%22%2C%22total_amount%22%3A%220.01%22%7D&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Fhttp%3A%2F%2Fcloud.eyun.online%3A9080%2Fpay%2Fapi%2Falipay%2Fapp%2Fnotify&sign=h4HPdXA8OvrVPzfFwUH5w%2FEkEk4IS4%2FEwyEPWE4t1%2BW1QTaBS2k2c63%2Bo6oMSIIfoQ%2B8SshHemLCI0GbzywuKgllVsFFxBqUBGZLQrDvLHw7H7vEpZ2KTjbtG88gXY3bQodV1R%2FjIU3sGkFmgK9I85BMu8Wr7GatyNG2mOiS2TdDl0tkUpWh9qQhekCMvQT9ANrZwpKvlcVZtNsJogYOLS7RAtKzvePV6oPIon34LQFYaX%2FY5l48jUGwKPM%2FIQ2cwhlljz7uoAhqYjqiZ6mD1cArIWmo9eIpNo0eYDiRAMDyBXr3Hc3n873KlxA01Ho52wHH2%2Fht4Q96GR%2B0iFzp1A%3D%3D&sign_type=RSA2&timestamp=2018-04-14+17%3A00%3A38&version=1.0" fromScheme:@"AliPayGongrongScheme" callback:^(NSDictionary *resultDic) {
+        LRLog(@"reslut = %@",resultDic);
+        // [self getAliPayBackData:resultDic];
+    }];
+     
+    /*
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+    
+    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+   // [request initRequestComm:dic withURL:Get_CitysList operationTag:GetCitysList];
+    [request initGetRequestComm:dic withURL:Get_CitysList operationTag:GetCitysList];
+    [SVProgressHUD show];
+     */
 }
 
 - (void)didReceiveMemoryWarning {

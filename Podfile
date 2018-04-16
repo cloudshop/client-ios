@@ -19,6 +19,10 @@ def shared_pods
     pod 'AMapSearch' #搜索功能
     pod 'JPush' #极光
     #  pod 'SwaggerClient', :git => 'https://github.com/GIT_USER_ID/GIT_REPO_ID.git'
+    #swagger 依赖的库
+    pod 'JSONModel', '1.4'
+    pod  'ISO8601', '0.6'
+    
 end
 
 

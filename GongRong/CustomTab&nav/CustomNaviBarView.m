@@ -647,7 +647,7 @@
     [self setRightSubBtn:_btnRightSub];
     [self addSubview:_searchBar];
     [self addSubview:_segmentedBar];
-    [self addSubview:_bottomLineImageView];
+   // [self addSubview:_bottomLineImageView];
     /*
     UIView *lineView=[[UIView alloc]initWithFrame:Rect(0, self.bounds.size.height-0.5, ScreenWidth, 0.5)];
     lineView.backgroundColor=RGB(230, 230, 230);

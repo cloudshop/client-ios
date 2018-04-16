@@ -8,8 +8,8 @@
 
 #import "baseWkWebVC.h"
 #import "UserLoadViewController.h"
-#import "GDMapManager.h"
-#import <AlipaySDK/AlipaySDK.h>
+#import "WebControlManager.h"
+#import "SharedUserDefault.h"
 
 @interface baseWkWebVC ()
 
@@ -32,50 +32,6 @@
 #define kAlertBackAndRefresh 1991
 
 @implementation baseWkWebVC
-
-
--(void)setUI
-{
-    
-    self.firstNBLB=[[UILabel alloc]init];
-    self.firstNBLB.font=[UIFont systemFontOfSize:15];
-    self.firstNBLB.textColor=[UIColor blueColor];
-    
-    self.operationLB=[[UILabel alloc]init];
-    self.operationLB.font=[UIFont systemFontOfSize:15];
-    self.operationLB.textColor=[UIColor redColor];
-    
-    
-    self.secondNBLB=[[UILabel alloc]init];
-    self.secondNBLB.font=[UIFont systemFontOfSize:15];
-    self.secondNBLB.textColor=[UIColor blueColor];
-    
-    self.resultLB=[[UILabel alloc]init];
-    self.resultLB.font=[UIFont systemFontOfSize:15];
-    self.resultLB.textColor=[UIColor greenColor];
-    
-    NSArray *titlrArr=[NSArray arrayWithObjects:@"因子",@"运算",@"因子",@"结果", nil];
-    NSArray *valueArr=[NSArray arrayWithObjects:self.firstNBLB,self.operationLB,self.secondNBLB,self.resultLB ,nil];
-    for (int i=0; i<titlrArr.count; i++) {
-        UILabel *lb=[[UILabel alloc]initWithFrame:CGRectMake(20, 80+50*i, 50, 40)];
-        lb.font=[UIFont systemFontOfSize:15];
-        lb.text=titlrArr[i];
-        [self.view addSubview:lb];
-        
-        UILabel *LB=valueArr[i];
-        LB.textAlignment=NSTextAlignmentRight;
-        LB.frame=CGRectMake(30,20+50*i , 200, 40);
-        [self.view addSubview:LB];
-    }
-    self.webView.frame = CGRectMake(0, self.resultLB.frame.origin.y+50, ScreenWidth, ScreenHeight-self.resultLB.frame.origin.y-50-50);
-    [self.view addSubview:self.webView];
-    self.webView.backgroundColor = [UIColor whiteColor];
-    self.webView.opaque = NO;
-    [self.view setUserInteractionEnabled:YES];
-    [self.webView setUserInteractionEnabled:YES];
-   
-}
-
 
 -(id)init
 {
@@ -105,22 +61,50 @@
 
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
         self.webView.navigationDelegate = self;
+        self.webView.UIDelegate=self;
        [self.webView setHackishlyHidesInputAccessoryView:YES];
         self.URL=[[NSURL alloc]init];
-        
-        
-       
-
-        
+      
     }
     return self;
+}
+- ( WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
+{
+    NSLog(@"%s---%@----self%@",__FUNCTION__,self.URL,self);
+    WKFrameInfo *frameInfo = navigationAction.targetFrame;
+    if (![frameInfo isMainFrame]) {
+        [webView loadRequest:navigationAction.request];
+    }
+    return nil;
+    
 }
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
     
+//    if (self.urlsArr.count<1) {
+//         [self openRequest];
+//    }
+    if ( self.navigationController.viewControllers.count==1) {
+        self.tabBarController.tabBar.hidden=NO;
+    }
+    else
+    {
+        self.tabBarController.tabBar.hidden=YES;
+    }
 }
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if ( self.navigationController.viewControllers.count==1) {
+        self.tabBarController.tabBar.hidden=NO;
+    }
+    else
+    {
+        self.tabBarController.tabBar.hidden=YES;
+    }
 
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     //  self.title = @"正在载入...";
@@ -128,49 +112,59 @@
     [self createNavigation];
     
   //  [self setUI];
-    self.webView.frame = CGRectMake(0, ViewCtrlTopBarHeight, ScreenWidth, ScreenHeight-ViewCtrlTopBarHeight);
+    self.webView.frame = CGRectMake(0, /*ViewCtrlTopBarHeight*/0, ScreenWidth, ScreenHeight-ViewCtrlTopBarHeight);
     [self.view addSubview:self.webView];
     self.webView.backgroundColor = kAppColor8;
     self.webView.opaque = NO;
     [self.view setUserInteractionEnabled:YES];
     [self.webView setUserInteractionEnabled:YES];
-    
-    
-   
+    if(self.showClose)
+    {
+        UIButton *closeBT=[UIButton buttonWithType:UIButtonTypeCustom];
+        closeBT.frame=Rect(10, StatusBarHeight+20, 25, 25);
+        closeBT.backgroundColor=[UIColor clearColor];
+        [closeBT setImage:[UIImage imageNamed:@"clearPhoneNBIMG"] forState:UIControlStateNormal];
+        [self.view addSubview:closeBT];
+        [closeBT addTarget:self action:@selector(closeCurrent) forControlEvents:UIControlEventTouchUpInside];
+    }
     
     self.urlsArr=[[NSMutableArray alloc]init];
     
     //键盘监听
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    
+   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadWebView) name:JSRefreshAllTag object:nil];
+  //  [self.webView addObserver:self forKeyPath:@"URL" options:NSKeyValueObservingOptionNew context:nil];
 //    NSString *path=[[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
 //    NSString *htmlString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 //    [self.webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:path]];
     
-    /*
-     //以下为测试代码
-     self.testArr=[NSArray arrayWithObjects:@"http://www.sina.cn",@"http://www.baidu.com",@"http://www.apple.com",@"http://www.imooc.com",nil];
-     self.timer=[NSTimer timerWithTimeInterval:3.0 target:self selector:@selector(loadNewUrl) userInfo:nil repeats:YES];
-     
-     self.currentCount=0;
-     
-     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
-     */
-}
--(void)clearJsFunction
-{//
     
-    //javaScriptString是JS方法名，completionHandler是异步回调block
-    [self.webView evaluateJavaScript:@"addParam(111)" completionHandler:^(id  result,NSError *error){
-        NSLog(@"%@",error);
-        if (!error) {
-            self.firstNBLB.text=nil;
-            self.secondNBLB.text=nil;
-            self.operationLB.text=nil;
-            self.resultLB.text=nil;
-        }
-    }];
+//     //以下为测试代码
+//     self.testArr=[NSArray arrayWithObjects:@"http://www.sina.cn",@"http://www.baidu.com",@"http://www.apple.com",@"http://www.imooc.com",nil];
+//     self.timer=[NSTimer timerWithTimeInterval:10.0 target:self selector:@selector(loadNewUrl) userInfo:nil repeats:YES];
+//
+//     self.currentCount=0;
+//
+//     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+    
+}
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    id oldName = [change objectForKey:NSKeyValueChangeOldKey];
+    NSLog(@"oldName----------%@",oldName);
+    id newName = [change objectForKey:NSKeyValueChangeNewKey];
+    NSLog(@"newName-----------%@",newName);
+  //  [self.webView stopLoading];
+    //当界面要消失的时候,移除kvo
+    //    [object removeObserver:self forKeyPath:@"name"];
+}
+-(void)closeCurrent
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+-(void)backAndRefreshOld
+{
+    [self reloadWebView];
 }
 -(void)loadNewUrl
 {
@@ -183,6 +177,7 @@
 }
 -(void)createNavigation
 {
+   
     self.viewNaviBar.cnbvDelegate=self;
     [self.viewNaviBar setNavBarMode:NavBarTypeLeftTitle];
     if (self.titleStr) {
@@ -195,6 +190,11 @@
     self.viewNaviBar.m_btnBack.hidden=YES;
     self.viewNaviBar.m_btnLeft.hidden=NO;
     [self.viewNaviBar.m_btnLeft addTarget:self action:@selector(newbtnBack:) forControlEvents:UIControlEventTouchUpInside];
+   
+    self.viewNaviBar.hidden=YES;
+    
+   
+    return;
 }
 
 
@@ -234,7 +234,7 @@
     if(![[urlString lowercaseString] hasPrefix:@"http"]){
         urlString=[NSString stringWithFormat:@"http://%@",urlString];
     }
-    urlString=[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+   // urlString=[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     self.URL=[NSURL URLWithString:urlString];
     [self openRequest];
 }
@@ -266,7 +266,7 @@
 #pragma mark - WKNavigationDelegate 页面跳转
 #pragma mark 在发送请求之前，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-   // NSLog(@"%s",__FUNCTION__);
+    NSLog(@"%s---%@----self%@",__FUNCTION__,self.URL,self);
     /**
      *typedef NS_ENUM(NSInteger, WKNavigationActionPolicy) {
      WKNavigationActionPolicyCancel, // 取消
@@ -285,8 +285,8 @@
 
 #pragma mark 在收到响应后，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-   // NSLog(@"%s",__FUNCTION__);
-    
+    NSLog(@"%s",__FUNCTION__);
+  
     /*
     static BOOL isRequestWeb = YES;
     if (isRequestWeb) {
@@ -334,8 +334,9 @@
         
     }
     
-   
+  
     /*----- 下面要做一些公共标准的处理     -------*/
+    /*
     NSMutableArray *publicParamArr=[ConUtils formatParamWithParamStr:paramStr];//拆分参数
     NSMutableArray *afterFillArr=[ConUtils setParamValueWithParamStr:publicParamArr];//填充本地参数
     BOOL openNew=NO;
@@ -365,8 +366,9 @@
             }
             self.backRefresh=[dic[@"value"] isEqualToString:@"true"]?YES:NO;
         }
-        */
+     
     }
+     */
     if (self.needLogin) {
         
         UserLoadViewController *loginController = [[UserLoadViewController alloc] init];
@@ -375,6 +377,7 @@
        decisionHandler(WKNavigationResponsePolicyCancel);
         
     }
+    /*
     if(openNew)
     {
         baseWkWebVC  *placeDetailWebViewVC=[[baseWkWebVC alloc]init];
@@ -396,6 +399,7 @@
         
        decisionHandler(WKNavigationResponsePolicyCancel);
     }
+     */
     if (!self.immediately) {
         [self.urlsArr addObject:URLAbsoluteString];
         //允许加载当前
@@ -433,7 +437,7 @@
 
 #pragma mark 接收到服务器跳转请求之后调用
 - (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
-   // NSLog(@"%s",__FUNCTION__);
+    NSLog(@"%s",__FUNCTION__);
 }
 
 #pragma mark WKNavigation导航错误
@@ -467,6 +471,19 @@
              [self.viewNaviBar setTitle:self.webView.title ];
         }
     }
+    if(self.parameDic&&self.parameDic.allKeys.count>0)
+    {
+        NSString *paramStr=[self.parameDic JSONString];
+        NSString *finallyStr=[NSString stringWithFormat:@"GetParams('%@')",paramStr];
+        //@"GetParams({'key':'ProductId','value':'32'})"
+            [webView evaluateJavaScript:finallyStr completionHandler:^(id  result,NSError *error){
+                NSLog(@"error%@",error);
+                NSLog(@"result%@",result);
+                if (!error) {
+        
+                }
+            }];
+    }
 //    [webView evaluateJavaScript:@"addParam('1')" completionHandler:^(id  result,NSError *error){
 //        NSLog(@"error%@",error);
 //        NSLog(@"result%@",result);
@@ -497,14 +514,14 @@
             UIAlertView *alt=[[UIAlertView alloc]initWithTitle:@"提示" message:@"数据加载失败了,刷新试试" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil];
             
              alt.tag=kAlertOnlyRefresh;
-            [alt show];
+          //  [alt show];
            
         }
         else
         {
             UIAlertView *alt=[[UIAlertView alloc]initWithTitle:@"提示" message:@"数据加载失败了,刷新试试" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"好的",nil];
             alt.tag=kAlertBackAndRefresh;
-            [alt show];
+          //  [alt show];
 
         }
     }
@@ -529,23 +546,101 @@
 {
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
     NSLog(@"JS 调用了 %@ 方法，传回参数 %@",message.name,message.body);
-    if ([message.name isEqualToString:JSModel]) {
-        NSDictionary *dic=(NSDictionary *)message.body;
-        
-        if ([dic[@"func"] isEqualToString:JSFuncPayTag]) {
-            if ([dic[JSPayType] isEqualToString:JSPay_Ali]) {
-                [[AlipaySDK defaultService] payOrder:dic[@"orderStr"] fromScheme:@"AliPayGongrongScheme" callback:^(NSDictionary *resultDic) {
-                    LRLog(@"reslut = %@",resultDic);
-                    // [self getAliPayBackData:resultDic];
+    [[WebControlManager shareInstance] handelMessageWithController:self AndMessage:message];
+}
+
+# pragma mark HttpRequestCommDelegate
+//网络请求成功协议的方法
+-(void)httpRequestSuccessComm:(NSInteger) tagId withInParams:(id) inParam
+{
+    [SVProgressHUD dismiss];
+    BaseResponse *resp=[[BaseResponse alloc]init];
+    [resp setHeadData:inParam];
+    switch (tagId) {
+            
+        case USERSMSCODE:
+        {
+            if (inParam == nil)
+            {
+                //数据库返回内容为空时
+                [self showToast:@"网络异常，请稍后再试"];
+            }
+            else
+            {
+                
+                
+                if (resp.code == 0)
+                {
+                    //验证码下发成功
+                    [self showToast:@"验证码下发成功"];
+                    // [verifyResponse setResultData:inParam];
+                }else
+                {
+                    //验证码下发失败
+                    [self showToast:[[inParam objectForKey:@"result"] objectForKey:@"msg"]];
+                  
+                }
+                
+            }
+        }
+            break;
+        case USERLOGIN:
+        {
+            if(resp.code==0)
+            {
+                
+                [self showToast:@"注册成功，请登录!"];
+               // [self.navigationController popViewControllerAnimated:YES ];
+                NSString *JSStr=[NSString stringWithFormat:@"mobileSetToken('%@','%@')",inParam[@"access_token"],inParam[@"refresh_token"]];
+               // NSString *JSStr=[NSString stringWithFormat:@"mobileSetToken('%@','%@')",@"inParam[access_token]",@"inParamrefresh_token"];
+                [[SharedUserDefault sharedInstance]setUserToken:inParam[@"access_token"]];
+                
+                [self.webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
+                    NSLog(@"%@",error);
+                    if (!error) {
+                        
+                    }
                 }];
             }
-           
-        }
-        else if([dic[@"functionName"] isEqualToString:@"result"])
-        {
+            else{
+                
+            }
+        }break;
             
+        case USERREGISTER:
+        {
+          
+            if(resp.code==0)
+            {
+               
+                [self showToast:@"注册成功，请登录!"];
+                [self.navigationController popViewControllerAnimated:YES ];
+                
+            }
+            else{
+              
+                NSString *returnMsg = [[inParam objectForKey:@"result"] objectForKey:@"msg"];
+                if (returnMsg == nil || [returnMsg isEqualToString:@""])
+                {
+                    [self showToast:@"亲!你的网络不太好哦,重新试试"];
+                }
+                else
+                {
+                    [self showToast:returnMsg];
+                }
+            }
         }
+            break;
+            
+        default:
+            break;
     }
+}
+
+-(void)httpRequestFailueComm:(NSInteger)tagId withInParams:(NSString *)error
+{
+    [SVProgressHUD dismiss];
+    [self showToast:@"请求失败，请稍后再试"];
 }
 -(void)OCCallJS
 {

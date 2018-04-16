@@ -14,7 +14,7 @@
 //#import "WGGoodsMainViewController.h"
 //#import "HotCityElement.h"
 //#import "WGRoundMainViewController.h"
-//#import "WGMyCenterViewController.h"
+#import "MainTabBarController.h"
 ////#import "WGMainAppViewController.h"
 //#import "WGRoundMainViewController.h"
 //#import "WGMessageViewController.h"
@@ -31,6 +31,7 @@
 //@property (nonatomic, strong) WGRoundMainViewController *roundMainViewController;
 //@property (nonatomic,strong) WGMyContactViewController *myContactViewController;
 @property (nonatomic, strong) UIViewController *currentViewController;
+@property (nonatomic,strong) MainTabBarController *roottabBarVC;
 @property (nonatomic, strong) NSString *currentCity;
 @property (nonatomic, strong) NSMutableArray *listFilterAry;
 @property (nonatomic, strong) NSMutableArray *topModeListArray;

@@ -125,8 +125,8 @@
         [self showToast:@"两次输入的密码不一致"];
         return;
     }
-    [self payByHttpRequest];
-    return;
+   // [self payByHttpRequest];
+   // return;
     HttpBaseRequest *req=[[HttpBaseRequest alloc]initWithDelegate:self];
     NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
     [dic setObject:@"dfjdlkndv" forKey:@"name"];

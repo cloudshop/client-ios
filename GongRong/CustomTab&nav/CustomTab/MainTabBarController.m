@@ -13,7 +13,7 @@
 //#import "SharedUserDefault.h"
 
 
-//#import "UserLoadViewController.h"
+#import "CoderReader.h"
 //#import "WGJumpUrlHandle.h"
 //#import "WGTabbarItemBT.h"
 
@@ -421,12 +421,21 @@
     [self.tabBar addSubview:[WGPublicData sharedInstance].BgView];
     [WGPublicData sharedInstance].dynamicBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     [WGPublicData sharedInstance].dynamicBtn.frame=CGRectMake(((ScreenWidth/5)-60)/2, -5, 60, 60);
-    [[WGPublicData sharedInstance].dynamicBtn setImage:[UIImage imageNamed:@"Tab5_Normal"] forState:UIControlStateNormal];//PublishAny_icon
+    [WGPublicData sharedInstance].dynamicBtn.layer.borderWidth=2.0;
+    [WGPublicData sharedInstance].dynamicBtn.layer.borderColor=[RGB(255, 0, 0) CGColor];
+    [WGPublicData sharedInstance].dynamicBtn.layer.cornerRadius=30;
+    [WGPublicData sharedInstance].dynamicBtn.clipsToBounds=YES;
+    [[WGPublicData sharedInstance].dynamicBtn setImage:[UIImage imageNamed:@"icon"] forState:UIControlStateNormal];//PublishAny_icon
     [[WGPublicData sharedInstance].dynamicBtn addTarget:self action:@selector(setView) forControlEvents:UIControlEventTouchUpInside];
     [[WGPublicData sharedInstance].BgView addSubview:[WGPublicData sharedInstance].dynamicBtn];
 }-(void)setView
 {
+    CoderReader *viewController = [[CoderReader alloc] init];
     
+    viewController.hidesBottomBarWhenPushed=YES;
+    [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:viewController animated:YES];
+    
+    return;
      [WGPublicData sharedInstance].dynamicBtn.hidden=YES;
      bgView1=[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
      bgView1.userInteractionEnabled=YES;

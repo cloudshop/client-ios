@@ -37,6 +37,9 @@
 
 //
 #import "Reachability.h"
+//
+#import "JSONModel.h"
+#import "JSONKeyMapper.h"
 /*
  广播字段
  */

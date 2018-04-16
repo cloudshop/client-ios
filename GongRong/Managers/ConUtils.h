@@ -138,7 +138,7 @@
 /*
  *url参数解析 [{key:username,Value:王不二},{}]
  */
-+(NSMutableArray *)formatParamWithParamStr:(NSString *)paramStr;
++(NSMutableDictionary *)formatParamWithParamStr:(NSString *)paramStr;
 /*
  *url参数填充
  */

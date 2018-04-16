@@ -14,7 +14,8 @@
 
 //测试服务器地址
 //#define BASEURLPATH @"http://192.168.1.10:9080/"
-#define BASEURLPATH @"http://192.168.1.105:8116/"  //迎新电脑
+#define BASEURLPATH  @"http://cloud.eyun.online:9080/"
+//#define BASEURLPATH @"http://192.168.1.105:8116/"  //迎新电脑
 //#define BASEURLPATH  @"http://121.168.1.102:8000"//建文电脑
 //#define BASEURLPATH  @"http://192.168.1.96:9080/"//国文电脑电脑
 
@@ -76,7 +77,7 @@
 #define Get_SignHistory @"signrecord/sign_of_week" //获取一周签到记录
 #define Get_RecordList @"membership_point/list"//积分明细
 #define User_type_List @"user/user_type_array"//获取用户类型列表
-#define USER_LOGIN @"user/login" //用户登录
+#define USER_LOGIN @"auth/login" //用户登录
 
 #define USER_LOGOUT @"user/logout" //退出登入
 //#define USER_REGISTER @"/mobileUser/register.cmd" //用户注册
@@ -96,9 +97,9 @@
 //#define USER_UPDATEPWD @"/mobileUser/updatePwd.cmd" //修改会员密码
 #define USER_UPDATEPWD @"/user/updatePwd.cmd" //修改会员密码
 
-#define Course_List @"coursetype/list"//科目列表
-#define Recommend_CourseType @"coursetype/recommendation"//推荐科目列表
-#define Get_CourseDetial @"coursetype/info"//获取科目详情
+#define Wallets_User @"wallet/api/wallets/user"//钱包账户
+#define Oreder_deposit @"order/api/dep-orders/deposit"//  创建充值订单
+#define Get_CitysList @"dict/api/cities"//获取城市列表
 #define Get_CourseDetialList @"course/list"//获取科目下课程列表
 #define ReGet_Videourl @"course/refresh_url"//重新获取视频的URl
 #define Get_AttachmentUrl  @"course/attachment_url"//获取课件资源地址
@@ -217,9 +218,9 @@ enum HTTPREQUESTTAG
     USERUPDATE, //修改用户信息
 
     RecommendCourseType,//推荐科目列表
-    CourseList,//科目列表
-    GetCourseDetial,//获取科目详情
-    GetCourseDetialList,//获取科目下课程列表
+    WalletsUser,//获取钱包账户
+    Orederdeposit,//  创建充值订单
+     GetCitysList,//获取城市列表
     ReGetVideourl ,//重新获取视频的URl
     GetAttachmentUrl,//获取课件资源地址
     SubmitStudyRecord ,//提交视频学习时长

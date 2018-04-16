@@ -59,9 +59,10 @@ static HttpBaseRequest *baseRequest ;
     
     NSString *token=[[SharedUserDefault sharedInstance]getUserToken];
     if (token) {
-        [params setObject:token forKey:@"token"];
+//        [params setObject:token forKey:@"token"];
+         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     }
-    
+
     
     [manager GET:url.absoluteString parameters:params progress:nil success:^(NSURLSessionTask *task, id responseObject){
         self.reTag = tag ;
@@ -115,8 +116,13 @@ static HttpBaseRequest *baseRequest ;
     
     NSString *token=[[SharedUserDefault sharedInstance]getUserToken];
     if (token) {
-        [params setObject:token forKey:@"token"];
+      //  [params setObject:token forKey:@"token"];
+         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     }
+   
+    //打印一下header信息
+    NSLog(@"HTTPRequestHeaders%@",manager.requestSerializer.HTTPRequestHeaders);
+    
     NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:url.absoluteString parameters:params error:nil];
     request.timeoutInterval = 10.f;
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -216,7 +222,8 @@ static HttpBaseRequest *baseRequest ;
   
     NSString *token=[[SharedUserDefault sharedInstance]getUserToken];
     if (token) {
-    [params setObject:token forKey:@"token"];
+   // [params setObject:token forKey:@"token"];
+         [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     }
     
     
@@ -262,7 +269,8 @@ static HttpBaseRequest *baseRequest ;
         manager.responseSerializer = [AFHTTPResponseSerializer serializer];
         NSString *token=[[SharedUserDefault sharedInstance]getUserToken];
         if (token) {
-            [params setObject:token forKey:@"token"];
+           // [params setObject:token forKey:@"token"];
+             [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
         }
         [manager POST:url.absoluteString parameters:params constructingBodyWithBlock:^(id <AFMultipartFormData> _Nonnull formData)
          {

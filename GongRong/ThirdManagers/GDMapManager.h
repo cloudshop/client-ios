@@ -18,4 +18,5 @@
 
 -(void)getLocation;
 +(instancetype)shareInstance;
+-(NSString *)getLoactionWithCityName:(NSString *)cityName;
 @end

@@ -16,8 +16,11 @@
 #import "SVProgressHUD.h"
 
 
-@interface baseWkWebVC : BaseViewController<UIGestureRecognizerDelegate,UIAlertViewDelegate,CustomNaviBarViewDelegate,WKNavigationDelegate,WKScriptMessageHandler,WKUIDelegate>
 
+@protocol webVCProtocol <NSObject>
+-(void)backAndRefreshOld;
+@end
+@interface baseWkWebVC : BaseViewController<UIGestureRecognizerDelegate,UIAlertViewDelegate,CustomNaviBarViewDelegate,WKNavigationDelegate,WKScriptMessageHandler,WKUIDelegate,webVCProtocol>
 
 
 
@@ -34,6 +37,9 @@
 @property (nonatomic,assign)BOOL immediately;//是否需要立即执行跳转（为false的时候就允许第一次加载，其他情况立即跳转）
 @property (nonatomic,assign)BOOL backRefresh;//返回到特定页面后是否需要刷新
 @property (nonatomic,assign)BOOL needLogin;
+@property (nonatomic,assign)BOOL showClose;
+@property (nonatomic,strong)NSMutableDictionary *parameDic;//需要向页面中传入的参数列表
+@property (nonatomic,weak)id<webVCProtocol>webDelegate;
 
 -(void)setUrl:(NSString*)urlString;
 -(void)openRequest;

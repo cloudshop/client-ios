@@ -6,11 +6,13 @@
 //
 
 #import "GDMapManager.h"
-
+#import <AMapSearchKit/AMapSearchKit.h>
+//#import <AMapSearch/AMapSearchAPI.h>
 
 
 @interface GDMapManager ()
-
+@property (nonatomic,strong) AMapGeoPoint *_Point;
+@property (nonatomic,strong)AMapSearchAPI *search;
 @end
 
 @implementation GDMapManager
@@ -31,6 +33,36 @@ static GDMapManager * manager;
         [self getLocation];
     }
     return self;
+}
+-(NSString *)getLoactionWithCityName:(NSString *)cityName
+{
+    NSString *finallyStr=@"";
+    
+//    _search = [[AMapSearchAPI alloc] initWithSearchKey:@"076b44ad71b2b10a38afdf4eda72ace8" Delegate:self];  //初始化搜索
+//    AMapGeocodeSearchRequest *georequest = [[AMapGeocodeSearchRequest alloc] init]; //构造一个request对象
+//    georequest.searchType = AMapSearchType_Geocode; //设置为地理编码样式
+//    georequest.address = @"北大"; //地址
+//    georequest.city = @[@"北京"];//所在城市
+//    [_search AMapGeocodeSearch:georequest]; //发起地理编码
+    
+    
+    
+    // 根据输入的城市名和地理位置，进行地理编码
+    // 编码请求
+    AMapGeocodeSearchRequest *request = [[AMapGeocodeSearchRequest alloc] init];
+    
+    // 明确请求条件
+    request.city = cityName;
+    
+    request.address = @"";//_placeField.text;
+    
+    // 确定请求类型为编码请求
+ //   request.searchType = AMapRoutePOISearchTypeATM;
+//
+//    // 让API按照请求条件进行请求返回信息（返回的信息在代理方法里）
+//    [_API AMapGeocodeSearch:request];
+    return  finallyStr;
+   // return nil;
 }
 -(void)getLocation
 {
@@ -80,7 +112,8 @@ static GDMapManager * manager;
     CLGeocoder *geoCoder = [[CLGeocoder alloc]init];
     //打印当前的经度与纬度
     NSLog(@"%f,%f",currentLocation.coordinate.latitude,currentLocation.coordinate.longitude);
-    
+    self.strlongitude=[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
+    self.strlatitude=[NSString stringWithFormat:@"%f",currentLocation.coordinate.latitude];
     //反地理编码
     [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         if (placemarks.count > 0) {

@@ -84,7 +84,7 @@
     view.backgroundColor = [UIColor blackColor];
     //view.center = CGPointMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2+150);
     //    view.center = CGPointMake(SCREEN_WIDTH/2, SCREEN_HEIGHT-view.frame.size.height-view.frame.size.height/2-20);
-    view.center = CGPointMake(ScreenWidth/2, ScreenHeight-TabBarHeight-view.frame.size.height/2-10);
+    view.center = CGPointMake(ScreenWidth/2, ScreenHeight-TabBarHeight-view.frame.size.height-10);
     
     UILabel *msgLa = [[UILabel alloc] init];
     msgLa.frame = CGRectMake(0, 0, width+30, 50) ;

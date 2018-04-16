@@ -68,20 +68,35 @@
     
     HomeWKWebVC *vc1=[[HomeWKWebVC alloc]init];
     
+    HomeVC *Home1=[[HomeVC alloc]init];
+    
+    
     ClassifyVC *vc2=[[ClassifyVC alloc]init];
-    [vc1 setUrl:@"http://192.168.1.102:8080/#/HomePage"];
-    [vc2 setUrl:@"http://192.168.1.102:8080/#/Classify"];
+    NSString *urlStr =@"http://192.168.1.102:8888/#/HomePage";
+   
+//    NSString *encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+//                                                                                                    (CFStringRef)urlStr,
+//                                                                                                    (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
+//                                                                                                    NULL,
+//                                                                                                    kCFStringEncodingUTF8));
     
+    [vc1 setUrl:urlStr];
+    vc1.view.backgroundColor=[UIColor redColor];
+    //[vc2 setUrl:@"http://www.baidu.com"];
+    [vc2 setUrl:@"http://192.168.1.102:8888/#/Classify"];
+    vc2.view.backgroundColor=[UIColor greenColor];
     baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
-    [vc3 setUrl:@"http://192.168.1.102:8080/#/Shopping"];
-    
-//    baseWkWebVC *vc4=[[baseWkWebVC alloc]init];
-//    [vc4 setUrl:@"http://192.168.1.102:8080/#/Mine"];
+    [vc3 setUrl:@"http://192.168.1.102:8888/#/Shopping"];
+    vc3.view.backgroundColor=[UIColor blueColor];
+    baseWkWebVC *vc4=[[baseWkWebVC alloc]init];
+    [vc4 setUrl:@"http://192.168.1.102:8888/#/Mine"];
+    // [vc4 setUrl:@"http://192.168.1.109:8888/#/Login"];
+    vc4.view.backgroundColor=[UIColor yellowColor];
     /*
     HomeVC *vc2=[[HomeVC alloc] init];
     ViewController *vc3=[[ViewController alloc]init];
      */
-    UserLoadViewController *vc4=[[UserLoadViewController alloc]init];
+  //  UserLoadViewController *vc4=[[UserLoadViewController alloc]init];
     UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:vc1];
     nav1.navigationBarHidden=YES;
     UINavigationController *nav2=[[UINavigationController alloc]initWithRootViewController:vc2];
@@ -94,13 +109,16 @@
     nav4.navigationBarHidden=YES;
     
     //[tBC setViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4, nil]];
-    
+    NSLog(@"VC1:%@VC2:%@VC3:%@VC4:%@",vc1,vc2,vc3,vc4);
    
    // self.window.backgroundColor=[UIColor redColor];
-    MainTabBarController *tBC=[[MainTabBarController alloc]initWithViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav1,nav4, nil]];
+    MainTabBarController *tBC=[[MainTabBarController alloc]initWithViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4, nil]];
     self.window.rootViewController=tBC;
     [self.window makeKeyAndVisible];
-//    [[WGPublicData sharedInstance] initCityAndlocationInfo];
+    
+    GDMapManager *manager=[GDMapManager shareInstance];
+    [manager getLocation];
+   [WGPublicData sharedInstance].roottabBarVC=tBC ;
 //    [[WGLocationManager sharedInstance] startBMKMap];
 //    
 //    [[WGLocationManager sharedInstance] startLocationByType:YES];
