@@ -10,6 +10,7 @@
 #import "UserLoadViewController.h"
 #import "WebControlManager.h"
 #import "SharedUserDefault.h"
+#import "JGManager.h"
 
 @interface baseWkWebVC ()
 
@@ -17,7 +18,7 @@
 @property (nonatomic,strong)NSArray *testArr;//测试url
 @property (nonatomic,assign)int currentCount;//定时器计数
 @property (nonatomic,strong)NSTimer *timer;
-
+@property (nonatomic,assign)BOOL didFinish;
 
 //几个显示的LB
 @property (nonatomic,strong)UILabel *firstNBLB;
@@ -38,6 +39,11 @@
     self=[super init];
     if (self) {
         
+    //    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource: @"document.cookie ='accessToken=accessToken00000';document.cookie = 'refreshToken=refreshToken1111';document.cookie = 'login = 1';"injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+//
+       
+        
+        
         WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
         
         // 设置偏好设置
@@ -57,7 +63,7 @@
         // 注入JS对象名称AppModel，当JS通过AppModel来调用时，
         // 我们可以在WKScriptMessageHandler代理中接收到
         [config.userContentController addScriptMessageHandler:self name:@"GongrongAppModel"];
-        
+     //   [config.userContentController addUserScript:cookieScript];
 
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
         self.webView.navigationDelegate = self;
@@ -87,10 +93,21 @@
 //    }
     if ( self.navigationController.viewControllers.count==1) {
         self.tabBarController.tabBar.hidden=NO;
+        self.webView.frame=Rect(0, 0, ScreenWidth, ScreenHeight-((IS_IPHONE_X==YES)?83.0f: 49.0f));
     }
     else
     {
         self.tabBarController.tabBar.hidden=YES;
+    }
+    if (!self.didFinish) {
+      //  [self openRequest];
+    }
+    NSRange range =[self.URL.absoluteString rangeOfString:@"Mine"];
+    NSRange range2 =[self.URL.absoluteString rangeOfString:@"Shopping"];
+    NSRange range3 =[self.URL.absoluteString rangeOfString:@"Classify"];
+    NSRange range4 =[self.URL.absoluteString rangeOfString:@"HomePage"];
+    if (range.location!=NSNotFound||range2.location!=NSNotFound||range3.location!=NSNotFound||range4.location!=NSNotFound) {
+       [self openRequest];
     }
 }
 -(void)viewDidAppear:(BOOL)animated
@@ -112,7 +129,7 @@
     [self createNavigation];
     
   //  [self setUI];
-    self.webView.frame = CGRectMake(0, /*ViewCtrlTopBarHeight*/0, ScreenWidth, ScreenHeight-ViewCtrlTopBarHeight);
+    self.webView.frame = CGRectMake(0, /*ViewCtrlTopBarHeight*/0, ScreenWidth, ScreenHeight/*-ViewCtrlTopBarHeight*/);
     [self.view addSubview:self.webView];
     self.webView.backgroundColor = kAppColor8;
     self.webView.opaque = NO;
@@ -160,7 +177,13 @@
 }
 -(void)closeCurrent
 {
+    if (self.navigationController) {
     [self.navigationController popViewControllerAnimated:YES];
+    }
+    else
+    {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 -(void)backAndRefreshOld
 {
@@ -202,6 +225,7 @@
 - (void)dealloc
 {
     self.webView.navigationDelegate = nil;
+    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"GongrongAppModel"];
 }
 #pragma mark 获取位置信息
 -(NSMutableDictionary *)getLocation
@@ -255,7 +279,47 @@
         return;
     } ;
     [SVProgressHUD show];
+//   //清除缓存
+//    // 清除部分，可以自己设置
+//    // NSSet *websiteDataTypes= [NSSet setWithArray:types];
+//    
+//    // 清除所有
+//    NSSet *websiteDataTypes = [WKWebsiteDataStore allWebsiteDataTypes];
+//    
+//    //// Date from
+//    
+//    NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
+//    
+//    //// Execute
+//    
+//    [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
+//        
+//        // Done
+//        NSLog(@"清楚缓存完毕");
+//        
+//    }];
+   
+    
+    NSMutableDictionary *cookieDic = [NSMutableDictionary dictionary];
+    NSMutableString *cookieValue = [NSMutableString stringWithFormat:@""];
+    NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [cookieJar cookies]) {
+        [cookieDic setObject:cookie.value forKey:cookie.name];
+    }
+    
+    // cookie重复，先放到字典进行去重，再进行拼接
+    for (NSString *key in cookieDic) {
+        NSString *appendString = [NSString stringWithFormat:@"%@=%@;", key, [cookieDic valueForKey:key]];
+        [cookieValue appendString:appendString];
+    }
+  
+   
+    NSLog(@"添加cookie:%@",cookieJar);
+    
+    
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:self.URL];
+     [request addValue:cookieValue forHTTPHeaderField:@"Cookie"];
+   // NSMutableURLRequest* request =[[NSMutableURLRequest alloc]initWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20];
     request.cachePolicy=NSURLRequestReloadIgnoringLocalCacheData;
    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
      [self.webView loadRequest:request];
@@ -277,16 +341,73 @@
 }
 
 #pragma mark 身份验证
-- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *__nullable credential))completionHandler {
-   // NSLog(@"%s",__FUNCTION__);
-    // 不要证书验证
-    completionHandler(NSURLSessionAuthChallengeUseCredential, nil);
+//- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *__nullable credential))completionHandler {
+//   // NSLog(@"%s",__FUNCTION__);
+//    // 不要证书验证
+//    completionHandler(NSURLSessionAuthChallengeUseCredential, nil);
+//}
+
+- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
+    
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        
+        NSURLCredential *card = [[NSURLCredential alloc]initWithTrust:challenge.protectionSpace.serverTrust];
+        
+        completionHandler(NSURLSessionAuthChallengeUseCredential,card);
+        
+    }
 }
 
+
+/*
+- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
+    
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        
+        NSURLCredential *card = [[NSURLCredential alloc]initWithTrust:challenge.protectionSpace.serverTrust];
+        
+        completionHandler(NSURLSessionAuthChallengeUseCredential,card);
+        
+    }
+}
+ */
 #pragma mark 在收到响应后，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
-    NSLog(@"%s",__FUNCTION__);
-  
+   // NSLog(@"%s",__FUNCTION__);
+    NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
+    NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
+    //读取wkwebview中的cookie 方法1
+    for (NSHTTPCookie *cookie in cookies) {
+        //        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+        NSLog(@"wkwebview中的cookie:%@", cookie);
+        
+    }
+    /*
+    //读取wkwebview中的cookie 方法2 读取Set-Cookie字段
+    NSString *cookieString = [[response allHeaderFields] valueForKey:@"Set-Cookie"];
+    NSLog(@"wkwebview中的cookie:%@", cookieString);
+    
+    //看看存入到了NSHTTPCookieStorage了没有
+    NSHTTPCookieStorage *cookieJar2 = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in cookieJar2.cookies) {
+        NSLog(@"NSHTTPCookieStorage中的cookie%@", cookie);
+    }
+    
+    
+    
+    WKWebsiteDataStore *dataStore = [WKWebsiteDataStore defaultDataStore];
+    WKHTTPCookieStore *cookie=dataStore.httpCookieStore;
+    [cookie getAllCookies:^(NSArray<NSHTTPCookie *> * arr) {
+        NSLog(@"getAllCookies--->%@",arr);
+    }];
+    [dataStore fetchDataRecordsOfTypes:[WKWebsiteDataStore allWebsiteDataTypes]
+                     completionHandler:^(NSArray<WKWebsiteDataRecord *> * __nonnull records) {
+                         for (WKWebsiteDataRecord *record  in records)
+                         {
+                             NSLog(@"WKWebsiteDataRecord:%@",[record description]);
+                         }
+                     }];
+    */
     /*
     static BOOL isRequestWeb = YES;
     if (isRequestWeb) {
@@ -369,6 +490,7 @@
      
     }
      */
+    /*
     if (self.needLogin) {
         
         UserLoadViewController *loginController = [[UserLoadViewController alloc] init];
@@ -377,6 +499,7 @@
        decisionHandler(WKNavigationResponsePolicyCancel);
         
     }
+     */
     /*
     if(openNew)
     {
@@ -400,6 +523,7 @@
        decisionHandler(WKNavigationResponsePolicyCancel);
     }
      */
+    /*
     if (!self.immediately) {
         [self.urlsArr addObject:URLAbsoluteString];
         //允许加载当前
@@ -431,8 +555,8 @@
         
     }
 
-    
-   // decisionHandler(WKNavigationResponsePolicyAllow);
+    */
+    decisionHandler(WKNavigationResponsePolicyAllow);
 }
 
 #pragma mark 接收到服务器跳转请求之后调用
@@ -447,7 +571,7 @@
 
 #pragma mark WKWebView终止
 - (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView {
-   // NSLog(@"%s",__FUNCTION__);
+    NSLog(@"-=-=-=-=-=-=--=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=%s",__FUNCTION__);
 }
 
 #pragma mark - WKNavigationDelegate 页面加载
@@ -471,6 +595,18 @@
              [self.viewNaviBar setTitle:self.webView.title ];
         }
     }
+    NSRange range4 =[self.URL.absoluteString rangeOfString:@"login"];
+    if (range4.location!=NSNotFound) {
+        NSString *JSStr=[NSString stringWithFormat:@"setDeviceId('%@')",[JGManager shareInstance].registrationID];
+        [webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
+                NSLog(@"error%@",error);
+                NSLog(@"result%@",result);
+                if (!error) {
+        
+                }
+            
+            }];
+    }
     if(self.parameDic&&self.parameDic.allKeys.count>0)
     {
         NSString *paramStr=[self.parameDic JSONString];
@@ -484,6 +620,10 @@
                 }
             }];
     }
+    
+    [self.webView setNeedsLayout];
+    self.didFinish=YES;
+    
 //    [webView evaluateJavaScript:@"addParam('1')" completionHandler:^(id  result,NSError *error){
 //        NSLog(@"error%@",error);
 //        NSLog(@"result%@",result);
@@ -505,7 +645,7 @@
         [alt show];
     }
    else if (error.code!=102) {
-        
+        /*
         [self.webView stopLoading];
         [self showToast:@"页面暂时走丢了"];
     
@@ -524,9 +664,11 @@
           //  [alt show];
 
         }
+         */
     }
     
 }
+
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (alertView.tag==kAlertOnlyRefresh) {

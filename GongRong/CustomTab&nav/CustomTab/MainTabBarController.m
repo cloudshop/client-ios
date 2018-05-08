@@ -16,7 +16,7 @@
 #import "CoderReader.h"
 //#import "WGJumpUrlHandle.h"
 //#import "WGTabbarItemBT.h"
-
+#import "baseWkWebVC.h"
 
 
 
@@ -49,8 +49,9 @@
         //测试添加自己的视图
         NSArray *iconArr=[NSArray arrayWithObjects:@"Tab1_Normal",@"Tab2_Normal",@"Tab3_Normal",@"Tab4_Normal", nil];
         NSArray *selectediconArr=[NSArray arrayWithObjects:@"Tab1_Selected",@"Tab2_Selected",@"Tab3_Selected",@"Tab4_Selected", nil];
+        NSArray *titleArr=@[@"首页",@"分类",@"购物车",@"我的"];
         
-        self.myView = [[CustomTabBar alloc] initWithNormalIMG:iconArr AndSelectedIMG:selectediconArr AndRect:rect]; //设置代理必须改掉前面的类型,不能用UIView
+        self.myView = [[CustomTabBar alloc] initWithNormalIMG:iconArr AndSelectedIMG:selectediconArr AndRect:rect AndtitleArr:titleArr]; //设置代理必须改掉前面的类型,不能用UIView
         self.myView.delegate = self; //设置代理
         self.myView.tag=9999;
         self.myView.backgroundColor=[UIColor whiteColor];
@@ -420,21 +421,25 @@
     [WGPublicData sharedInstance].BgView=[[UIView alloc]initWithFrame:CGRectMake((ScreenWidth/2-(ScreenWidth/5)/2), 0, (ScreenWidth/5), 49)];
     [self.tabBar addSubview:[WGPublicData sharedInstance].BgView];
     [WGPublicData sharedInstance].dynamicBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [WGPublicData sharedInstance].dynamicBtn.frame=CGRectMake(((ScreenWidth/5)-60)/2, -5, 60, 60);
-    [WGPublicData sharedInstance].dynamicBtn.layer.borderWidth=2.0;
-    [WGPublicData sharedInstance].dynamicBtn.layer.borderColor=[RGB(255, 0, 0) CGColor];
-    [WGPublicData sharedInstance].dynamicBtn.layer.cornerRadius=30;
+    [WGPublicData sharedInstance].dynamicBtn.frame=CGRectMake(((ScreenWidth/5)-50)/2, -1, 45, 45);
+//    [WGPublicData sharedInstance].dynamicBtn.layer.borderWidth=2.0;
+//    [WGPublicData sharedInstance].dynamicBtn.layer.borderColor=[RGB(255, 0, 0) CGColor];
+//    [WGPublicData sharedInstance].dynamicBtn.layer.cornerRadius=25;
     [WGPublicData sharedInstance].dynamicBtn.clipsToBounds=YES;
-    [[WGPublicData sharedInstance].dynamicBtn setImage:[UIImage imageNamed:@"icon"] forState:UIControlStateNormal];//PublishAny_icon
+    [[WGPublicData sharedInstance].dynamicBtn setImage:[UIImage imageNamed:@"circleIcon"] forState:UIControlStateNormal];//PublishAny_icon
     [[WGPublicData sharedInstance].dynamicBtn addTarget:self action:@selector(setView) forControlEvents:UIControlEventTouchUpInside];
     [[WGPublicData sharedInstance].BgView addSubview:[WGPublicData sharedInstance].dynamicBtn];
 }-(void)setView
 {
-    CoderReader *viewController = [[CoderReader alloc] init];
+   // CoderReader *viewController = [[CoderReader alloc] init];
     
-    viewController.hidesBottomBarWhenPushed=YES;
-    [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:viewController animated:YES];
-    
+   // viewController.hidesBottomBarWhenPushed=YES;
+   // [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:viewController animated:YES];
+    baseWkWebVC * codeVC=[[baseWkWebVC alloc]init];
+    [codeVC setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/myQrCode"]];
+    codeVC.showClose=YES;
+  //  [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:codeVC animated:YES];
+    [ [WGPublicData sharedInstance].currentViewController presentViewController:codeVC animated:YES completion:nil];
     return;
      [WGPublicData sharedInstance].dynamicBtn.hidden=YES;
      bgView1=[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];

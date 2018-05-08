@@ -29,6 +29,6 @@
 -(void)addButtonWithImage:(UIImage *)image selectedImage:(UIImage *) selectedImage;
 //- (void)clickBtn:(UIButton *)button;
 -(void)clickBtnWithIndex:(NSInteger)index;
--(id)initWithNormalIMG:(NSArray *)normal AndSelectedIMG:(NSArray *)selectedArr AndRect:(CGRect)frame;
+-(id)initWithNormalIMG:(NSArray *)normal AndSelectedIMG:(NSArray *)selectedArr AndRect:(CGRect)frame AndtitleArr:(NSArray *)titleArr; 
 
 @end

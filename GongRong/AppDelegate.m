@@ -11,6 +11,7 @@
 #import "WGPublicData.h"
 #import "WGLocationManager.h"
 #import "SharedUserDefault.h"
+#import "GongRong.pch"
 #import "HomeVC.h"
 #import "HomeWKWebVC.h"
 #import "ClassifyVC.h"
@@ -19,10 +20,12 @@
 #import <AlipaySDK/AlipaySDK.h>
 #import <WechatOpenSDK/WXApi.h>
 #import <IQKeyboardManager/IQKeyboardManager.h>
-
+#import "HttpBaseRequest.h"
 #pragma mark 极光
 // 引入JPush功能所需头文件
-#import "JPUSHService.h"
+//#import "JPUSHService.h"
+//#import "JSHAREService.h"
+#import "JGManager.h"
 // iOS10注册APNs所需头文件
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
@@ -30,7 +33,7 @@
 
 
 
-@interface AppDelegate ()<JPUSHRegisterDelegate,UIScrollViewDelegate>
+@interface AppDelegate ()<UIScrollViewDelegate,HttpRequestCommDelegate>
 @property (nonatomic,strong)NSArray *array;
 @property (nonatomic,strong)UIScrollView *scrollView;
 @property (strong,nonatomic) UIPageControl *pageControl;
@@ -45,6 +48,7 @@
     
     UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
     [[UIApplication sharedApplication] setStatusBarOrientation:orientation];
+    [UIApplication sharedApplication];
     
     NSURL *url = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
     if(url)
@@ -71,27 +75,29 @@
     HomeVC *Home1=[[HomeVC alloc]init];
     
     
-    ClassifyVC *vc2=[[ClassifyVC alloc]init];
-    NSString *urlStr =@"http://192.168.1.102:8888/#/HomePage";
-   
+    baseWkWebVC *vc2=[[baseWkWebVC alloc]init];
+    NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];//@"http://cloud.eyun.online:8888/#/HomePage";
+  //  NSString *urlStr =@"http://www.grjf365.com/#/HomePage";
 //    NSString *encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
 //                                                                                                    (CFStringRef)urlStr,
 //                                                                                                    (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
 //                                                                                                    NULL,
 //                                                                                                    kCFStringEncodingUTF8));
-    
+
     [vc1 setUrl:urlStr];
     vc1.view.backgroundColor=[UIColor redColor];
-    //[vc2 setUrl:@"http://www.baidu.com"];
-    [vc2 setUrl:@"http://192.168.1.102:8888/#/Classify"];
-    vc2.view.backgroundColor=[UIColor greenColor];
+   // [vc2 setUrl:@"http://192.168.1.110:8888/#/Classify"];
+    [vc2 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Classify"]];
+   // [vc2 setUrl:@"http://www.baidu.com"];
+   // vc2.view.backgroundColor=[UIColor greenColor];
     baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
-    [vc3 setUrl:@"http://192.168.1.102:8888/#/Shopping"];
-    vc3.view.backgroundColor=[UIColor blueColor];
+    [vc3 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Shopping"]];
+   // [vc3 setUrl:@"http://192.168.1.110:8888/#/Shopping"];
+   // vc3.view.backgroundColor=[UIColor blueColor];
     baseWkWebVC *vc4=[[baseWkWebVC alloc]init];
-    [vc4 setUrl:@"http://192.168.1.102:8888/#/Mine"];
-    // [vc4 setUrl:@"http://192.168.1.109:8888/#/Login"];
-    vc4.view.backgroundColor=[UIColor yellowColor];
+    [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Mine"]];
+   // [vc4 setUrl:@"http://www.grjf365.com"];
+   // vc4.view.backgroundColor=[UIColor yellowColor];
     /*
     HomeVC *vc2=[[HomeVC alloc] init];
     ViewController *vc3=[[ViewController alloc]init];
@@ -109,7 +115,7 @@
     nav4.navigationBarHidden=YES;
     
     //[tBC setViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4, nil]];
-    NSLog(@"VC1:%@VC2:%@VC3:%@VC4:%@",vc1,vc2,vc3,vc4);
+   // NSLog(@"VC1:%@VC2:%@VC3:%@VC4:%@",vc1,vc2,vc3,vc4);
    
    // self.window.backgroundColor=[UIColor redColor];
     MainTabBarController *tBC=[[MainTabBarController alloc]initWithViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4, nil]];
@@ -128,15 +134,12 @@
     
 #pragma mark 初始化IQKeyboardManager
     [self setUpIQKeyBordManager];
-#pragma mark 极光初始化
-    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
-    entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
-    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
-        // 可以添加自定义categories
-        // NSSet<UNNotificationCategory *> *categories for iOS10 or later
-        // NSSet<UIUserNotificationCategory *> *categories for iOS8 and iOS9
-    }
-    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
+
+    
+#pragma mark 极光推送 分享
+    [self registerRemoteNotification];
+ //   [JGManager shareInstance];
+
     
 #pragma mark 首次启动引导
     [self  cheackFirstStart];
@@ -176,12 +179,63 @@
              
              [self handleRemoteNotification:dicPlayload isShowAlert:NO];
              */
-            
+
         }
     }
     
     return YES;
 }
+//自定义方法
+- (void)registerRemoteNotification
+{
+#if !TARGET_IPHONE_SIMULATOR
+    /*
+     注册通知(推送)
+     申请App需要接受来自服务商提供推送消息
+     */
+    
+    // 判读系统版本是否是“iOS 8.0”以上
+    if (IOS8) {
+        
+        // 定义用户通知类型(Remote.远程 - Badge.标记 Alert.提示 Sound.声音)
+        UIUserNotificationType types = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+        
+        // 定义用户通知设置
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        
+        // 注册用户通知 - 根据用户通知设置
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }
+    else if (IOS8_10)
+    {
+        
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+        
+    }
+    else if (IOS10)
+    {
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        center.delegate = self;
+        [center requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (!error) {
+                [[UIApplication sharedApplication] registerForRemoteNotifications]; // required to get the app to do anything at all about push notifications
+                LRLog(@"succeeded!");
+            }
+        }];
+    }
+    else {      // iOS8.0 以前远程推送设置方式
+        // 定义远程通知类型(Remote.远程 - Badge.标记 Alert.提示 Sound.声音)
+        UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+        
+        // 注册远程通知 -根据远程通知类型
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:myTypes];
+    }
+    
+#endif
+}
+
 -(void)cheackFirstStart
 {
     if ([[SharedUserDefault sharedInstance] isFirstStartApp] == nil ||
@@ -312,6 +366,14 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     /// Required - 注册 DeviceToken
     [JPUSHService registerDeviceToken:deviceToken];
 }
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    //[3-EXT]:如果APNS注册失败，通知个推服务器
+    LRLog(@"didFailToRegisterForRemoteNotificationsWithError===%@",[error localizedDescription]);
+    
+
+    
+}
 #pragma mark- JPUSHRegisterDelegate
 
 // iOS 10 Support
@@ -366,9 +428,39 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+    [dic setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"version"];
+    HttpBaseRequest *req=[[HttpBaseRequest alloc] initWithDelegate:self];
+    
+    [req initGetRequestComm:dic withURL:VERSION_CHECK operationTag:VERSIONCHECK];
+    
 }
-
-
+-(void)httpRequestFailueComm:(NSInteger)tagId withInParams:(NSString *)error
+{
+    
+}
+-(void)httpRequestSuccessComm:(NSInteger)tagId withInParams:(id)inParam
+{
+    BaseResponse *res=[[BaseResponse alloc]init];
+    [res setHeadData:inParam];
+    switch (tagId) {
+            
+        case VERSIONCHECK:{
+            if (res.code == 0) {
+                
+            }
+        }break;
+            default:
+            break;
+    }
+}
+- (void)gotoVersionUpdate
+{
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]])
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]];
+    }
+}
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }

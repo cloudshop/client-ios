@@ -28,15 +28,15 @@
     // Drawing code
 }
 */
--(id)initWithNormalIMG:(NSArray *)normal AndSelectedIMG:(NSArray *)selectedArr AndRect:(CGRect)frame
+-(id)initWithNormalIMG:(NSArray *)normal AndSelectedIMG:(NSArray *)selectedArr AndRect:(CGRect)frame AndtitleArr:(NSArray *)titleArr
 {
     self=[super initWithFrame:frame];
     if (self) {
-        [self initBTInfo:normal AndSelectedIMG:selectedArr];
+        [self initBTInfo:normal AndSelectedIMG:selectedArr AndtitleArr:titleArr];
     }
     return self;
 }
--(void)initBTInfo:(NSArray *)normal AndSelectedIMG:(NSArray *)selectedArr
+-(void)initBTInfo:(NSArray *)normal AndSelectedIMG:(NSArray *)selectedArr AndtitleArr:(NSArray *)titleArr
 {
     for (int i=0; i<normal.count; i++) {
         
@@ -47,7 +47,7 @@
         UIImage *image = [UIImage imageNamed:imageName];
         UIImage *imageSel = [UIImage imageNamed:imageNameSel];
         
-        CustomTabBarBT *btn = [[CustomTabBarBT alloc]initWithNormalImg:image AndSelectedIMG:imageSel];
+        CustomTabBarBT *btn = [[CustomTabBarBT alloc]initWithNormalImg:image AndSelectedIMG:imageSel AndTitle:titleArr[i]];
         
         btn.tag =100+ i; //设置按钮的标记, 方便来索引当前的按钮,并跳转到相应的视图
         [self addSubview:btn];
@@ -77,18 +77,18 @@
     }
 }
 - (void)addButtonWithImage:(UIImage *)image selectedImage:(UIImage *)selectedImage {
-    CustomTabBarBT *btn = [[CustomTabBarBT alloc]initWithNormalImg:image AndSelectedIMG:selectedImage];
-    
-    [self addSubview:btn];
-    
-    //带参数的监听方法记得加"冒号"
-    [btn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    //如果是第一个按钮, 则选中(按顺序一个个添加)
-    if (self.subviews.count == 1) {
-        [self clickBtn:btn];
-    }
+//    CustomTabBarBT *btn = [[CustomTabBarBT alloc]initWithNormalImg:image AndSelectedIMG:selectedImage andTitle:];
+//    
+//    [self addSubview:btn];
+//    
+//    //带参数的监听方法记得加"冒号"
+//    [btn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    
+//    //如果是第一个按钮, 则选中(按顺序一个个添加)
+//    if (self.subviews.count == 1) {
+//        [self clickBtn:btn];
+//    }
 }
 
 /**专门用来布局子视图, 别忘了调用super方法*/

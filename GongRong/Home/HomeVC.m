@@ -9,7 +9,9 @@
 #import "CoderReader.h"
 #import "SharedUserDefault.h"
 #import <AlipaySDK/AlipaySDK.h>
-
+#import "JGManager.h"
+#import <WechatOpenSDK/WXApi.h>
+#import "WechatSignAdaptor.h"
 @interface HomeVC ()<HttpRequestCommDelegate>
 
 @end
@@ -38,6 +40,7 @@
     
     GDMapManager *manager=[GDMapManager shareInstance];
     [manager getLocation];
+    NSString *dodo= [manager getLoactionWithCityName:@""];
     NSLog(@"城市：%@ 经度：%@纬度：%@",manager.currentCity,manager.strlatitude,manager.strlongitude);
    
 //    [[AlipaySDK defaultService] payOrder:strrrr fromScheme:AliPayScheme callback:^(NSDictionary *resultDic) {
@@ -142,8 +145,8 @@
     NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
     
     HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
-    [dic setObject:@"13691226692" forKey:@"username"];
-    [dic setObject:@"1234" forKey:@"password"];
+    [dic setObject:@"admin" forKey:@"username"];
+    [dic setObject:@"admin" forKey:@"password"];
     [request initRequestJsonComm:dic withURL:USER_LOGIN operationTag:USERLOGIN];
     [SVProgressHUD show];
     return;
@@ -240,6 +243,62 @@
 -(void)gotoSystemMessageCenter
 {
     /*
+    JSHAREMessage *message = [JSHAREMessage message];
+    message.text = @"vrfds";
+    message.title=@"title";
+    message.platform = JSHAREPlatformWechatSession;
+    message.mediaType = JSHARELink;
+    message.url=@"http://www.baidu.com";
+    [JSHAREService share:message handler:^(JSHAREState state, NSError *error) {
+        NSLog(@"分享回调");
+    }];
+    return;
+     */
+//    [self showToast:@"哈哈哈哈"];
+//    return ;
+    /*
+    [WXApi registerApp:@"wx951d7848326848f0"];
+ //  NSString *wxverson= [WXApi getApiVersion];
+    // 发起微信支付，设置参数
+    PayReq *request = [[PayReq alloc] init];
+    request.openID = @"wx951d7848326848f0";//[dic objectForKey:@"wx951d7848326848f0"];
+    request.partnerId =@"1490382052";// [dic objectForKey:@"1490382052"];
+    request.prepayId=@"wx21180844339240e20e09d1f21319234061";// [dic objectForKey:@"wx21180844339240e20e09d1f21319234061"];
+    request.package = @"Sign=WXPay";
+    request.nonceStr= @"2mk8n04btDCeHtJ6";//[dic objectForKey:WXNONCESTR];
+    
+    // 将当前时间转化成时间戳
+    NSDate *datenow = [NSDate date];
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+    UInt32 timeStamp =[timeSp intValue];
+    request.timeStamp= timeStamp;
+    
+    
+    // 签名加密
+    WechatSignAdaptor *md5 = [[WechatSignAdaptor alloc] init];
+
+    request.sign=[md5 createMD5SingForPay:request.openID
+                                partnerid:request.partnerId
+                                 prepayid:request.prepayId
+                                  package:request.package
+                                 noncestr:request.nonceStr
+                                timestamp:request.timeStamp];
+     
+    //request.sign = @"1C622C4811D616AC6485B2CE2F95A7D3";
+    
+    // 调用微信
+    [WXApi sendReq:request];
+     */
+    /*
+    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+    
+    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+    // [request initRequestComm:dic withURL:Get_CitysList operationTag:GetCitysList];
+    [request initGetRequestComm:dic withURL:Get_CitysList operationTag:GetCitysList];
+    [SVProgressHUD show];
+    */
+    
+    /*
      NSMutableDictionary *apsDi=[NSMutableDictionary dictionaryWithObjectsAndKeys:@"test",@"alert",@"2",@"badge",@"default",@"sound", nil];
      NSMutableDictionary *pushDic=[NSMutableDictionary dictionaryWithObjectsAndKeys:@"1",@"idStr",@"PDF",@"notifyFileType",@"http://wiz-image-bucket.oss-cn-beijing.aliyuncs.com/null/话术.pdf",@"notifyUrl",@"KS",@"type", apsDi,@"aps",nil];
      
@@ -251,11 +310,12 @@
      */
 //   [self.navigationController pushViewController:messageVC animated:YES];
     
-    [[AlipaySDK defaultService] payOrder:@"alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2018032102418344&biz_content=%7B%22body%22%3A%22%E8%B4%A1%E8%9E%8D%E7%A7%AF%E5%88%86%E5%95%86%E5%9F%8E%E5%85%85%E5%80%BC%22%2C%22out_trade_no%22%3A%221201804140919612%22%2C%22passback_params%22%3A%22deposit%22%2C%22subject%22%3A%22%E5%85%85%E5%80%BC%E4%BD%99%E9%A2%9D%22%2C%22timeout_express%22%3A%2230m%22%2C%22total_amount%22%3A%220.01%22%7D&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Fhttp%3A%2F%2Fcloud.eyun.online%3A9080%2Fpay%2Fapi%2Falipay%2Fapp%2Fnotify&sign=h4HPdXA8OvrVPzfFwUH5w%2FEkEk4IS4%2FEwyEPWE4t1%2BW1QTaBS2k2c63%2Bo6oMSIIfoQ%2B8SshHemLCI0GbzywuKgllVsFFxBqUBGZLQrDvLHw7H7vEpZ2KTjbtG88gXY3bQodV1R%2FjIU3sGkFmgK9I85BMu8Wr7GatyNG2mOiS2TdDl0tkUpWh9qQhekCMvQT9ANrZwpKvlcVZtNsJogYOLS7RAtKzvePV6oPIon34LQFYaX%2FY5l48jUGwKPM%2FIQ2cwhlljz7uoAhqYjqiZ6mD1cArIWmo9eIpNo0eYDiRAMDyBXr3Hc3n873KlxA01Ho52wHH2%2Fht4Q96GR%2B0iFzp1A%3D%3D&sign_type=RSA2&timestamp=2018-04-14+17%3A00%3A38&version=1.0" fromScheme:@"AliPayGongrongScheme" callback:^(NSDictionary *resultDic) {
+    
+    [[AlipaySDK defaultService] payOrder:@"alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2018032102418344&biz_content=%7B%22body%22%3A%22%E8%B4%A1%E8%9E%8D%E7%A7%AF%E5%88%86%E5%95%86%E5%9F%8E%22%2C%22out_trade_no%22%3A%2212018050717547179%22%2C%22passback_params%22%3A%22product%22%2C%22subject%22%3A%22%E6%94%AF%E4%BB%98%22%2C%22timeout_express%22%3A%2230m%22%2C%22total_amount%22%3A%22345.00%22%7D&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Fhttp%3A%2F%2Fcloud.eyun.online%3A9080%2Fpay%2Fapi%2Falipay%2Fapp%2Fnotify&sign=k0FYbMstiH8c7DhIj%2BpgMLOghF9uIvlnIub9w9Nfu9IG1dSRuMYiA0LTB%2Bn9dvnjkKMarTF%2BO2W0gDVAuWGhbKQ%2BRuMGl5FRzAXr8E0ww%2BIPlAyqXbqQXN%2BySbBIAUMjegtrM8ffUta%2Fj4UiGjQOGV1BNuTL9GrLS5xAfEpDT%2F4g6GzwtyTMmvC0nYp4dQtZwHzFf%2Bjsudyg%2FUK1J2FP2mfqTZBsh2PQxjdZaMoIzkqZ%2BQuFqrIiKTaAZsnrpxGdlZeM5q53wv2RWlvvXapSstSg4oLW9YqOMMO4Z9oFoKGkIUZGcTXvwGFtv3c0q5OEO8tb2eRbfp1uI0DD375O7A%3D%3D&sign_type=RSA2&timestamp=2018-05-07+17%3A21%3A54&version=1.0" fromScheme:@"AliPayGongrongScheme" callback:^(NSDictionary *resultDic) {
         LRLog(@"reslut = %@",resultDic);
         // [self getAliPayBackData:resultDic];
     }];
-     
+    
     /*
     NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
     

@@ -17,7 +17,7 @@
     // Drawing code
 }
 */
--(instancetype)initWithNormalImg:(UIImage *)normalIMG AndSelectedIMG:(UIImage *)selectIMG
+-(instancetype)initWithNormalImg:(UIImage *)normalIMG AndSelectedIMG:(UIImage *)selectIMG AndTitle:(NSString *)titleStr
 {
     self=[super init];
     if (self ) {
@@ -30,7 +30,7 @@
         self.imgIcon.image = normalIMG;
         [self.imgIcon sizeToFit];
         [self initView];
-        
+        self.titleLB.text=titleStr;
     }
     return self;
 }
@@ -60,23 +60,33 @@
     self.messageCountLB.hidden=YES;
     [self addSubview:self.messageCountLB];
     
+    self.titleLB=[[UILabel alloc]init];
+    self.titleLB.font=[UIFont systemFontOfSize:14];
+    [self addSubview:self.titleLB];
+    
 }
 -(void)layoutSubviews
 {
     if (!self.selected) {
         self.imgIcon.image=self.image;
+        self.titleLB.textColor=RGB(150, 150, 150);
+
     }
     else
     {
         self.imgIcon.image=self.selectedImage;
+        self.titleLB.textColor=RGB(255, 0, 0);
     }
-    self.imgIcon.center=CGPointMake(self.width/2, self.height/2);
+    [self.titleLB sizeToFit];
+    self.imgIcon.center=CGPointMake(self.width/2, self.height/2-15);
     if(self.iconLeftOffset!=0)
     {
         self.imgIcon.left-=self.iconLeftOffset;
     }
     self.imgIcon.height=self.height-19;
-    self.imgIcon.top=10;
+    self.imgIcon.top=3;
+    self.titleLB.centerX=self.imgIcon.centerX;
+    self.titleLB.top=self.imgIcon.bottom;
     self.messageCountLB.bottom=self.imgIcon.top+10;
     self.messageCountLB.left=self.imgIcon.right-10;
     

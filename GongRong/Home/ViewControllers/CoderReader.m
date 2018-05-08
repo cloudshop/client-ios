@@ -78,8 +78,25 @@
             [self setupView];
         }
     } else {
-        UIAlertView *alert  =  [UIAlertView alertViewTitle:@"相机权限提示" message:kIsAuthorizedString  delegate:self cancelButtonTitle:@"知道了"];
-        alert.tag = 1;
+      //  UIAlertView *alert  =  [UIAlertView alertViewTitle:@"相机权限提示" message:kIsAuthorizedString  delegate:self cancelButtonTitle:@"知道了"];
+     //   alert.tag = 1;
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"相机权限提示"
+                                                                                 message:kIsAuthorizedString
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *action) {
+                                                              [self.navigationController popViewControllerAnimated:YES];
+
+                                                          }]];
+                [alertController addAction:[UIAlertAction actionWithTitle:@"取消"
+                                                                    style:UIAlertActionStyleCancel
+                                                                  handler:^(UIAlertAction *action){
+                                                                      //completionHandler(NO);
+                                                                    [self.navigationController popViewControllerAnimated:YES];
+                                                                  }]];
+        
+        [self presentViewController:alertController animated:YES completion:^{}];
     }
 }
 
@@ -152,7 +169,22 @@
     if ([self.cameraController cameraHasTorch]) {
         [self configurationTorch];
     } else {
-        [UIAlertView alertViewTitle:@"温馨提示！" message:@"您的闪光灯无法开启，请检查" delegate:self cancelButtonTitle:@"知道了"];
+     //   [UIAlertView alertViewTitle:@"温馨提示！" message:@"您的闪光灯无法开启，请检查" delegate:self cancelButtonTitle:@"知道了"];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示"
+                                                                                 message:@"您的闪光灯无法开启"
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *action) {
+                                                             
+                                                          }]];
+//        [alertController addAction:[UIAlertAction actionWithTitle:@"取消"
+//                                                            style:UIAlertActionStyleCancel
+//                                                          handler:^(UIAlertAction *action){
+//                                                              completionHandler(NO);
+//                                                          }]];
+        
+        [self presentViewController:alertController animated:YES completion:^{}];
     }
 }
 
@@ -187,10 +219,11 @@
     else{
     NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
     
-    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
-    [dic setObject:codesString forKey:@"content"];
-    [request initRequestComm:dic withURL:Push_Sign operationTag:PushSign];
-    [SVProgressHUD show];
+//    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+//    [dic setObject:codesString forKey:@"content"];
+//    [request initRequestComm:dic withURL:Push_Sign operationTag:PushSign];
+//    [SVProgressHUD show];
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

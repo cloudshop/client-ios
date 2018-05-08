@@ -13,10 +13,12 @@
 #if GR_DEBUG
 
 //测试服务器地址
+//#define Web_BASEURLPATH  @"http://cloud.eyun.online:8888"
+//#define Web_BASEURLPATH  @"http://www.grjf365.com/#/"
 //#define BASEURLPATH @"http://192.168.1.10:9080/"
 #define BASEURLPATH  @"http://cloud.eyun.online:9080/"
-//#define BASEURLPATH @"http://192.168.1.105:8116/"  //迎新电脑
-//#define BASEURLPATH  @"http://121.168.1.102:8000"//建文电脑
+//#define Web_BASEURLPATH @"http://192.168.1.110:9999"  // 建北电脑
+#define Web_BASEURLPATH  @"http://192.168.1.109:8888"//敬敬电脑
 //#define BASEURLPATH  @"http://192.168.1.96:9080/"//国文电脑电脑
 
 //#define FILESERVER @"http://106.3.78.236:8086/fileserver"//图片文件服务器
@@ -46,9 +48,9 @@
 
 //正式服务器地址
 
-#define BASEURLPATH @"https://weixin.wizsharing.com/m/"
+#define BASEURLPATH @"http://app.grjf365.com:9080/"
 //#define BASEURLPATH @"http://leifeng365.com:81"
-
+#define Web_BASEURLPATH  @"http://app.grjf365.com"
 //#define BASEWALLETSERVER  @"http://account.weigee.net/account/"
 #define BASEWALLETSERVER  @"http://leifeng365.com:81/account/"
 
@@ -153,7 +155,7 @@
 
 #define QUERY_EVALUATE @"/order/queryEvaluate.cmd" //评论内容查询
 #define SHOP_NOTICE @"/mobileCommon/queryMemberNotice.cmd"  //用户获取商家接单的信息
-#define VERSION_CHECK @"/common/queryVersion.cmd"  //版本信息检测
+#define VERSION_CHECK @"/appmanager/api/version/ios"  //版本信息检测
 #define PUSH_REGISTE_DEVICE @"/push/registerDevice.cmd"   //推送服务设备信息注册
 #define ARRIVE_PAY  @"/order/arrivePay.cmd"     //到店支付
 

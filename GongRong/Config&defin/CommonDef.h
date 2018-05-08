@@ -70,7 +70,9 @@
 #define kSignSuccessNotification @"kSignSuccessNotification"
 
 
-
+#define IOS8 ([[UIDevice currentDevice].systemVersion doubleValue] >= 8.0 && [[UIDevice currentDevice].systemVersion doubleValue] < 9.0)
+#define IOS8_10 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0 && [[UIDevice currentDevice].systemVersion doubleValue] < 10.0)
+#define IOS10 ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0)
 
 //提示语 TEXT
 #define NO_DATA_TEXT @"已经到底了!"
@@ -78,6 +80,20 @@
 
 //JS调用方法的合法标记
 #define FunctionNameTag  @"GongRongCredits"
+
+#define JSModel @"GongrongAppModel"
+#define JSRefreshAllTag @"refreshAll"
+#define     JSFuncOpenTag       @"openURL"
+#define        JSFuncCloseTag        @"closeCurrent"
+#define  JSFuncShareTag   @"share"
+//#define    @"finallyIndex"
+//#define    @"refreshParent"
+//#define    @"showClose"
+#define  JSFuncScanTag  @"scan"
+#define JSFuncPayTag    @"pay"
+#define  JSPayType  @"payType:"
+#define  JSPay_Wechat  @"Wechat"
+#define  JSPay_Ali  @"Ali"
 /*
  *16进制颜色转换
  */

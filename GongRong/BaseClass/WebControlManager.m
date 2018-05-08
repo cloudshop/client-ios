@@ -10,6 +10,7 @@
 #import <AlipaySDK/AlipaySDK.h>
 #import "SharedUserDefault.h"
 #import "CoderReader.h"
+#import "JGManager.h"
 
 @implementation WebControlManager
 
@@ -53,6 +54,13 @@
              [self closeCurrentPage:webVC andDic:paramDic];
             
          }
+         else if ([dic[@"func"] isEqualToString:JSFuncShareTag])
+         {
+             NSDictionary *paramDic=dic[@"param"];
+            // [self closeCurrentPage:webVC andDic:paramDic];
+             [self shareOperation:paramDic];
+             
+         }
         else if ([dic[@"func"] isEqualToString:JSFuncScanTag])
         {
             CoderReader *viewController = [[CoderReader alloc] init];
@@ -84,6 +92,9 @@
         if (showClose) {
             vc.showClose=YES;
         }
+        if(![[urlStr lowercaseString] hasPrefix:@"http:"]){
+            urlStr=[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,urlStr];
+        }
          [vc setUrl:urlStr];
         if (publicParamDic.allKeys.count>0) {
             vc.parameDic=[[NSMutableDictionary alloc] initWithDictionary:publicParamDic];
@@ -113,16 +124,17 @@
           //  [WGPublicData sharedInstance].roottabBarVC.tabBar.hidden=NO;
             [[WGPublicData sharedInstance].roottabBarVC.myView clickBtnWithIndex:0];
         }
+        if (finallyIndex>0) {
+            [webVC.navigationController popToRootViewControllerAnimated:YES];
+            // [UIApplication sharedApplication].keyWindow.rootViewController=[WGPublicData sharedInstance].roottabBarVC;
+            //  [WGPublicData sharedInstance].roottabBarVC.tabBar.hidden=NO;
+            [[WGPublicData sharedInstance].roottabBarVC.myView clickBtnWithIndex:finallyIndex-1];
+        }
         if (refreshAll) {
             [webVC.navigationController popToRootViewControllerAnimated:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:JSRefreshAllTag object:nil];
         }
-        if (finallyIndex>0) {
-            [webVC.navigationController popToRootViewControllerAnimated:YES];
-           // [UIApplication sharedApplication].keyWindow.rootViewController=[WGPublicData sharedInstance].roottabBarVC;
-          //  [WGPublicData sharedInstance].roottabBarVC.tabBar.hidden=NO;
-            [[WGPublicData sharedInstance].roottabBarVC.myView clickBtnWithIndex:finallyIndex-1];
-        }
+       
         if (refreshParent) {
             if (webVC.webDelegate&&[webVC respondsToSelector:@selector(backAndRefreshOld)]) {
                   [webVC.webDelegate backAndRefreshOld];
@@ -142,7 +154,7 @@
 {
     NSDictionary *dic=[NSDictionary dictionaryWithDictionary:payDic];
     NSDictionary *paramDic=dic[@"param"];
-    if (!paramDic||payDic.allKeys<1) {
+    if (!paramDic||paramDic.allKeys.count<1) {
         return;
     }
     NSLog(@"%@",paramDic[JSPayType]);
@@ -160,6 +172,50 @@
     {
         NSLog(@"%@",dic[JSPayType]);
     }
+}
+-(void)shareOperation:(NSDictionary *)shareDic
+{
+    NSDictionary *paramDic=[NSDictionary dictionaryWithDictionary:shareDic];
+    
+    if (!paramDic||paramDic.allKeys.count<1) {
+        return;
+    }
+    JSHAREPlatform platformType;
+    if ([paramDic[@"platformType"] isEqualToString:@"WechatSession"]) {//微信会话好友
+        platformType=JSHAREPlatformWechatSession;
+    }
+    else if ([paramDic[@"platformType"] isEqualToString:@"TimeLine"])//微信朋友圈
+    {
+        platformType=JSHAREPlatformWechatTimeLine;
+    }
+    else if ([paramDic[@"platformType"] isEqualToString:@"QQ"])//QQ好友
+    {
+        platformType=JSHAREPlatformQzone;
+    }
+    else if ([paramDic[@"platformType"] isEqualToString:@"SinaWeibo"])//新浪微博
+    {
+        platformType=JSHAREPlatformSinaWeibo;
+    }else{platformType = JSHAREPlatformWechatSession;}
+    if ([paramDic[@"shareType"] isEqualToString:@"URL"]) {
+        if(!paramDic[@"orderStr"])
+        {
+            return;
+        }
+        
+       
+    }
+    else
+    {
+       // NSLog(@"%@",paramDic[JSPayType]);
+    }
+    JSHAREMessage *message = [JSHAREMessage message];
+    message.text = paramDic[@"content"];
+    message.title=paramDic[@"title"];
+    message.platform = platformType;
+    message.mediaType = JSHARELink;
+    [JSHAREService share:message handler:^(JSHAREState state, NSError *error) {
+        NSLog(@"分享回调");
+    }];
 }
 -(void)evaluateJavaScript:(NSString *)operationStr
 {

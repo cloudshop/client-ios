@@ -49,7 +49,7 @@
     self.viewNaviBar.hidden=YES;
     GDMapManager *manager=[GDMapManager shareInstance];
 //    [manager getLocation];
-     NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
+ //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
 //    NSLog(@"城市：%@ 经度：%@纬度：%@",manager.currentCity,manager.strlatitude,manager.strlongitude);
 }
 -(void)getSMS
@@ -123,7 +123,6 @@
         [manager getLocation];
         NSLog(@"城市：%@ 经度：%@纬度：%@",manager.currentCity,manager.strlatitude,manager.strlongitude);
     
-    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
     
    // NSString *jsStr = @"messageSink(erybdsli)";
     

@@ -6,13 +6,14 @@
 //
 
 #import "GDMapManager.h"
-#import <AMapSearchKit/AMapSearchKit.h>
+//#import <AMapSearchKit/AMapSearchKit.h>
 //#import <AMapSearch/AMapSearchAPI.h>
 
 
-@interface GDMapManager ()
+@interface GDMapManager ()<AMapSearchDelegate>
 @property (nonatomic,strong) AMapGeoPoint *_Point;
 @property (nonatomic,strong)AMapSearchAPI *search;
+@property (nonatomic,strong)AMapServices *services;
 @end
 
 @implementation GDMapManager
@@ -28,25 +29,59 @@ static GDMapManager * manager;
 }
 -(instancetype)init
 {
-    if (self=[super init]) {
-        
+    if (self==[super init]) {
+        self.services = [AMapServices sharedServices];
+        self.services.apiKey = @"076b44ad71b2b10a38afdf4eda72ace8";
+        self.services.enableHTTPS=NO;
         [self getLocation];
     }
     return self;
+}
+/* 输入提示回调. */
+- (void)onInputTipsSearchDone:(AMapInputTipsSearchRequest *)request response:(AMapInputTipsSearchResponse *)response
+{
+    if (response.count == 0)
+    {
+        return;
+    }
+    
+   
+    
+}
+
+- (void)onGeocodeSearchDone:(AMapGeocodeSearchRequest *)request response:(AMapGeocodeSearchResponse *)response
+{
+    if (response.geocodes.count == 0)
+    {
+        return;
+    }
+    
+    //解析response获取地理信息，具体解析见 Demo
+}
+- (void)AMapSearchRequest:(id)request didFailWithError:(NSError *)error
+{
+    
 }
 -(NSString *)getLoactionWithCityName:(NSString *)cityName
 {
     NSString *finallyStr=@"";
     
-//    _search = [[AMapSearchAPI alloc] initWithSearchKey:@"076b44ad71b2b10a38afdf4eda72ace8" Delegate:self];  //初始化搜索
-//    AMapGeocodeSearchRequest *georequest = [[AMapGeocodeSearchRequest alloc] init]; //构造一个request对象
-//    georequest.searchType = AMapSearchType_Geocode; //设置为地理编码样式
-//    georequest.address = @"北大"; //地址
-//    georequest.city = @[@"北京"];//所在城市
-//    [_search AMapGeocodeSearch:georequest]; //发起地理编码
+ 
+    AMapSearchAPI *nk=  [[AMapSearchAPI alloc] init];
+    nk.delegate = self;
     
+    AMapPOIKeywordsSearchRequest *request = [[AMapPOIKeywordsSearchRequest alloc] init];
     
+    request.keywords            = @"北京大学";
+    request.city                = @"北京";
+    request.types               = @"高等院校";
+    request.requireExtension    = YES;
     
+    [nk AMapPOIKeywordsSearch:request];
+    
+    return @"";
+     
+    /*
     // 根据输入的城市名和地理位置，进行地理编码
     // 编码请求
     AMapGeocodeSearchRequest *request = [[AMapGeocodeSearchRequest alloc] init];
@@ -57,10 +92,13 @@ static GDMapManager * manager;
     request.address = @"";//_placeField.text;
     
     // 确定请求类型为编码请求
- //   request.searchType = AMapRoutePOISearchTypeATM;
+   // request.searchType = AMapRoutePOISearchTypeATM;
 //
 //    // 让API按照请求条件进行请求返回信息（返回的信息在代理方法里）
-//    [_API AMapGeocodeSearch:request];
+    AMapSearchAPI *api=[[AMapSearchAPI alloc]init];
+    api.delegate=self;
+    [api AMapGeocodeSearch:request];
+     */
     return  finallyStr;
    // return nil;
 }

@@ -35,6 +35,7 @@
 		3C24C4AF207B0557003D1559 /* SWGResponseEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C24C49D207B0557003D1559 /* SWGResponseEntity.m */; };
 		3C24C4B0207B0557003D1559 /* SWGVerifyResourceApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C24C4A1207B0557003D1559 /* SWGVerifyResourceApi.m */; };
 		3C24C4B1207B0557003D1559 /* SWGProfileInfoResourceApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C24C4A3207B0557003D1559 /* SWGProfileInfoResourceApi.m */; };
+		3C33FA95208B4D1200223290 /* WechatSignAdaptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C33FA93208B4D1200223290 /* WechatSignAdaptor.m */; };
 		3C474925200880A400E4C672 /* HomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C474924200880A400E4C672 /* HomeVC.m */; };
 		3C4770102040F54D00E103D4 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C47700F2040F54D00E103D4 /* CoreFoundation.framework */; };
 		3C4770122040F57400E103D4 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4770112040F57400E103D4 /* CoreAudio.framework */; };
@@ -154,6 +155,7 @@
 		3CD7734920031FBA00B76524 /* MCURLSessionConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD771A31FFF919100B76524 /* MCURLSessionConfiguration.m */; };
 		3CD7734A20031FBA00B76524 /* MCWiFiManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD771A51FFF919100B76524 /* MCWiFiManager.m */; };
 		3CD7735B2003200500B76524 /* ZYQAssetPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD7723D1FFF919100B76524 /* ZYQAssetPickerController.m */; };
+		3CFD82E620998534009F6F04 /* circleIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CFD82E520998534009F6F04 /* circleIcon.png */; };
 		E49F4D565DAB8EC97E492CB4 /* libPods-GongRongPoints.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE174E5E7D277A82F8FC66C /* libPods-GongRongPoints.a */; };
 /* End PBXBuildFile section */
 
@@ -292,6 +294,9 @@
 		3C24C4A1207B0557003D1559 /* SWGVerifyResourceApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWGVerifyResourceApi.m; sourceTree = "<group>"; };
 		3C24C4A2207B0557003D1559 /* SWGVerifyResourceApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWGVerifyResourceApi.h; sourceTree = "<group>"; };
 		3C24C4A3207B0557003D1559 /* SWGProfileInfoResourceApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWGProfileInfoResourceApi.m; sourceTree = "<group>"; };
+		3C33FA93208B4D1200223290 /* WechatSignAdaptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WechatSignAdaptor.m; sourceTree = "<group>"; };
+		3C33FA94208B4D1200223290 /* WechatSignAdaptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WechatSignAdaptor.h; sourceTree = "<group>"; };
+		3C33FA962092D17800223290 /* GongRongPoints.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GongRongPoints.entitlements; sourceTree = "<group>"; };
 		3C474923200880A400E4C672 /* HomeVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeVC.h; sourceTree = "<group>"; };
 		3C474924200880A400E4C672 /* HomeVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeVC.m; sourceTree = "<group>"; };
 		3C47700F2040F54D00E103D4 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
@@ -533,6 +538,7 @@
 		3CD7731420031DE400B76524 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3CD7731620031DFE00B76524 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		3CD7731820031E0C00B76524 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		3CFD82E520998534009F6F04 /* circleIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circleIcon.png; sourceTree = "<group>"; };
 		8882B92F092B19D6732DFBF5 /* Pods-GongRongCredits.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GongRongCredits.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GongRongCredits/Pods-GongRongCredits.debug.xcconfig"; sourceTree = "<group>"; };
 		9BE174E5E7D277A82F8FC66C /* libPods-GongRongPoints.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GongRongPoints.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39DBB926A318E1F1F1A47E8 /* Pods-GongRongPoints.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GongRongPoints.release.xcconfig"; path = "Pods/Target Support Files/Pods-GongRongPoints/Pods-GongRongPoints.release.xcconfig"; sourceTree = "<group>"; };
@@ -811,6 +817,8 @@
 				3C5BB5642053BC090099B3E2 /* GDMapManager.m */,
 				3C5BB5872057B0A30099B3E2 /* JGManager.h */,
 				3C5BB5882057B0A30099B3E2 /* JGManager.m */,
+				3C33FA94208B4D1200223290 /* WechatSignAdaptor.h */,
+				3C33FA93208B4D1200223290 /* WechatSignAdaptor.m */,
 			);
 			path = ThirdManagers;
 			sourceTree = "<group>";
@@ -845,6 +853,7 @@
 		3CD771321FFF8E8D00B76524 = {
 			isa = PBXGroup;
 			children = (
+				3C33FA962092D17800223290 /* GongRongPoints.entitlements */,
 				3CD7713D1FFF8E8D00B76524 /* GongRong */,
 				3CD7713C1FFF8E8D00B76524 /* Products */,
 				3CD772DD20030DF600B76524 /* Frameworks */,
@@ -869,6 +878,7 @@
 				3C5DB98E2084DC2200D6B4DE /* guide640x1280_02.jpg */,
 				3C5DB98F2084DC2300D6B4DE /* guide640x1280_03.jpg */,
 				3C5DB9962084F2AF00D6B4DE /* icon.png */,
+				3CFD82E520998534009F6F04 /* circleIcon.png */,
 				3CD771411FFF8E8D00B76524 /* ViewController.h */,
 				3CD771421FFF8E8D00B76524 /* ViewController.m */,
 				3C4749222008807B00E4C672 /* Home */,
@@ -1321,9 +1331,12 @@
 				TargetAttributes = {
 					3CD7713A1FFF8E8D00B76524 = {
 						CreatedOnToolsVersion = 9.0;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
 								enabled = 1;
 							};
 						};
@@ -1353,6 +1366,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CFD82E620998534009F6F04 /* circleIcon.png in Resources */,
 				3C5DB9932084DC2300D6B4DE /* guide640x1280_01.jpg in Resources */,
 				3C70D9D5206B972E0077E4F1 /* index.html in Resources */,
 				3C5BB5862056916C0099B3E2 /* AlipaySDK.bundle in Resources */,
@@ -1475,6 +1489,7 @@
 				3CD772D920030D3400B76524 /* UIView+Named.m in Sources */,
 				3CD7732D20031EE900B76524 /* UIImage+FYScreenShot.m in Sources */,
 				3CD7732C20031EE600B76524 /* FadeOutView.m in Sources */,
+				3C33FA95208B4D1200223290 /* WechatSignAdaptor.m in Sources */,
 				3C24C4A5207B0557003D1559 /* SWGResponseDeserializer.m in Sources */,
 				3CD772AC2002FBBC00B76524 /* TYWebVC.m in Sources */,
 				3C5BB5652053BC090099B3E2 /* GDMapManager.m in Sources */,
@@ -1670,15 +1685,16 @@
 			baseConfigurationReference = E3D7007712E6A2FCEFCD776D /* Pods-GongRongPoints.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 62CPVW7MEU;
+				CODE_SIGN_ENTITLEMENTS = GongRongPoints.entitlements;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = W34VKAY95W;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/GongRong/3rd/Getui/GtSdkLib",
 					"$(PROJECT_DIR)/GongRong",
 					"$(PROJECT_DIR)/GongRong/3rd/AliPay",
 				);
-				GCC_PREFIX_HEADER = "/Users/King/Desktop/GongRong/GongRong/Config&defin/GongRong.pch";
+				GCC_PREFIX_HEADER = "/Users/King/Desktop/gongrong_git/GongRong/Config&defin/GongRong.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1712,6 +1728,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.grjf365.gongrongpoints;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "22301e1a-225f-447d-b47f-4d2ae22b869e";
+				PROVISIONING_PROFILE_SPECIFIER = GRDev;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1721,15 +1739,17 @@
 			baseConfigurationReference = C39DBB926A318E1F1F1A47E8 /* Pods-GongRongPoints.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 62CPVW7MEU;
+				CODE_SIGN_ENTITLEMENTS = GongRongPoints.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = W34VKAY95W;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/GongRong/3rd/Getui/GtSdkLib",
 					"$(PROJECT_DIR)/GongRong",
 					"$(PROJECT_DIR)/GongRong/3rd/AliPay",
 				);
-				GCC_PREFIX_HEADER = "/Users/King/Desktop/GongRong/GongRong/Config&defin/GongRong.pch";
+				GCC_PREFIX_HEADER = "/Users/King/Desktop/gongrong_git/GongRong/Config&defin/GongRong.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -1763,6 +1783,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.grjf365.gongrongpoints;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "cffd04d9-332b-4335-982a-7650537e3b83";
+				PROVISIONING_PROFILE_SPECIFIER = GRProduction;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
