@@ -46,29 +46,12 @@
   
     [self addSearch];
    // self.webView.frame=Rect(0, 0, ScreenWidth, ScreenHeight-TabBarHeight);
+#pragma mark 禁用原生导航
     self.viewNaviBar.hidden=YES;
-    GDMapManager *manager=[GDMapManager shareInstance];
-//    [manager getLocation];
- //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
-//    NSLog(@"城市：%@ 经度：%@纬度：%@",manager.currentCity,manager.strlatitude,manager.strlongitude);
+    
 }
 -(void)getSMS
 {
-//    SWGProfileinforesourceApi *apiInstance = [[SWGProfileinforesourceApi alloc] init];
-//    
-//    // getActiveProfiles
-//    [apiInstance getActiveProfilesUsingGETWithCompletionHandler:
-//     ^(SWGProfileInfoVM* output, NSError* error) {
-//         if (output) {
-//             NSLog(@"%@", output);
-//         }
-//         if (error) {
-//             NSLog(@"Error: %@", error);
-//         }
-//     }];
-
-    
-    
     SWGVerifyresourceApi *api=[[SWGVerifyresourceApi alloc]init];
     [api smsCodeUsingGETWithPhone:@"13439178769" completionHandler:^(SWGResponseEntity *output, NSError *error) {
         NSLog(@"output%@",output);
@@ -117,15 +100,11 @@
 -(void)showCodeReader
 {
     
-   // [self  apipayWithOrderData:@""];
-    //{func：pay payType:WX(Ali) orderStr: XXXXX}
-        GDMapManager *manager=[GDMapManager shareInstance];
-        [manager getLocation];
-        NSLog(@"城市：%@ 经度：%@纬度：%@",manager.currentCity,manager.strlatitude,manager.strlongitude);
-    
-    
-   // NSString *jsStr = @"messageSink(erybdsli)";
-    
+    /*
+    GDMapManager *manager=[GDMapManager shareInstance];
+    [manager getLocation];
+    NSLog(@"城市：%@ 经度：%@纬度：%@",manager.currentCity,manager.strlatitude,manager.strlongitude);
+ 
    NSString *jsStr = [NSString stringWithFormat:@"GeographicalLocation('%@','%@')",manager.strlongitude,manager.strlatitude];
     NSLog(@"%@",jsStr);
     [self.webView evaluateJavaScript:jsStr completionHandler:^(id _Nullable d, NSError * _Nullable error) {
@@ -134,27 +113,7 @@
     }];
     NSLog(@"----->%@",self.URL);
     return;
-    
-    /*
-    
-    [[AlipaySDK defaultService] payOrder:@"alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2018032102418344&biz_content=%7B%22body%22%3A%22%E8%B4%A1%E8%9E%8D%E7%A7%AF%E5%88%86%E5%95%86%E5%9F%8E%E5%85%85%E5%80%BC%22%2C%22out_trade_no%22%3A%221201804141271398%22%2C%22passback_params%22%3A%22deposit%22%2C%22subject%22%3A%22%E5%85%85%E5%80%BC%E4%BD%99%E9%A2%9D%22%2C%22timeout_express%22%3A%2230m%22%2C%22total_amount%22%3A%220.01%22%7D&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Fhttp%3A%2F%2Fcloud.eyun.online%3A9080%2Fpay%2Fapi%2Falipay%2Fapp%2Fnotify&sign=vgOWFpJs8FcR0%2FjVq5OBZSrVuOS7NPjX9%2Bb%2BUAghCshVPxOORry44awXX9M7vgyqWEs%2FiikjZtbOE9tMO4DciyfZr6XQuzmmIWekJ53j1lTIZC5i81b28r%2FR1oZH%2BX7ApnnuaLS8RN8rvnKDTgJHxCeTc6BE8R%2FyS%2B04xvy6QlLfbUoaPuWMRdShKfgRgyV2BW4%2BE9mXaNMizI8kEcm0wQfNVgKYMlUM1R9dB64ZZ2h%2FGJAPIYXB8NdzfuONc6Zt6zE0pGnx7JzZiEOljWA9u5ajdeAzbYE8bvXKeAwSunR2EYQH%2BGRqCXj3mK6Ta9C%2Fe38aJVwUWPU%2BQk%2FlRGPUaw%3D%3D&sign_type=RSA2&timestamp=2018-04-14+12%3A27%3A40&version=1.0" fromScheme:@"AliPayGongrongScheme" callback:^(NSDictionary *resultDic) {
-        LRLog(@"reslut = %@",resultDic);
-        // [self getAliPayBackData:resultDic];
-    }];
-    return;
-    
-    /*
-    NSString *JSStr=@"window.webkit.messageHandlers.GongrongAppModel.postMessage(‘addPara()’})";
-    [self.webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
-        NSLog(@"%@",error);
-        if (!error) {
-            
-        }
-    }];
-    return;
     */
-    [self showToast:@"thgvfdsa"];
-    return;
     CoderReader *viewController = [[CoderReader alloc] init];
     
     viewController.hidesBottomBarWhenPushed=YES;
@@ -213,12 +172,12 @@
 {
 //    self.mainTableView.frame=Rect(0, self.viewNaviBar.bottom, ScreenWidth, self.view.height-TabBarHeight-self.viewNaviBar.height);
 //    self.mainTableView.backgroundColor=kAppColor7;
-    NSLog(@"viewH:-->%f  TabBarHeight--->%f   self.viewNaviBar.height--->%f ",self.view.height,TabBarHeight,self.viewNaviBar.height);
+ //   NSLog(@"viewH:-->%f  TabBarHeight--->%f   self.viewNaviBar.height--->%f ",self.view.height,TabBarHeight,self.viewNaviBar.height);
 }
 #pragma mark 页面开始加载时调用
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
     //  NSLog(@"%s",__FUNCTION__);
-   // [self showCodeReader];
+   
 }
 #pragma mark 当内容开始返回时调用
 - (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation {
@@ -231,8 +190,20 @@
     //   NSLog(@"%s",__FUNCTION__);
     
     [SVProgressHUD dismiss];
-     [self showCodeReader];
-  //覆盖父类方法  啥都不干
+   
+  //覆盖父类方法
+    GDMapManager *manager=[GDMapManager shareInstance];
+        [manager getLocation];
+    //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
+       
+    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@')",manager.strlongitude,manager.strlatitude
+                     ];
+    [webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
+        NSLog(@"%@",error);
+        if (!error) {
+            
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

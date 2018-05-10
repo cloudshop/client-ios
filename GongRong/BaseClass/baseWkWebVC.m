@@ -38,12 +38,7 @@
 {
     self=[super init];
     if (self) {
-        
-    //    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource: @"document.cookie ='accessToken=accessToken00000';document.cookie = 'refreshToken=refreshToken1111';document.cookie = 'login = 1';"injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
-//
-       
-        
-        
+
         WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
         
         // 设置偏好设置
@@ -63,6 +58,9 @@
         // 注入JS对象名称AppModel，当JS通过AppModel来调用时，
         // 我们可以在WKScriptMessageHandler代理中接收到
         [config.userContentController addScriptMessageHandler:self name:@"GongrongAppModel"];
+        
+        //手动设置cookie  测试
+        //    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource: @"document.cookie ='accessToken=accessToken00000';document.cookie = 'refreshToken=refreshToken1111';document.cookie = 'login = 1';"injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
      //   [config.userContentController addUserScript:cookieScript];
 
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
@@ -76,7 +74,7 @@
 }
 - ( WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-    NSLog(@"%s---%@----self%@",__FUNCTION__,self.URL,self);
+  //  NSLog(@"%s---%@----self%@",__FUNCTION__,self.URL,self);
     WKFrameInfo *frameInfo = navigationAction.targetFrame;
     if (![frameInfo isMainFrame]) {
         [webView loadRequest:navigationAction.request];
@@ -91,6 +89,7 @@
 //    if (self.urlsArr.count<1) {
 //         [self openRequest];
 //    }
+#pragma mark  判断是否是回到了四个Nav的RootVC  改变webview的高度 和显示底部TabBar
     if ( self.navigationController.viewControllers.count==1) {
         self.tabBarController.tabBar.hidden=NO;
         self.webView.frame=Rect(0, 0, ScreenWidth, ScreenHeight-((IS_IPHONE_X==YES)?83.0f: 49.0f));
@@ -128,7 +127,7 @@
     
     [self createNavigation];
     
-  //  [self setUI];
+ 
     self.webView.frame = CGRectMake(0, /*ViewCtrlTopBarHeight*/0, ScreenWidth, ScreenHeight/*-ViewCtrlTopBarHeight*/);
     [self.view addSubview:self.webView];
     self.webView.backgroundColor = kAppColor8;
@@ -151,12 +150,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadWebView) name:JSRefreshAllTag object:nil];
-  //  [self.webView addObserver:self forKeyPath:@"URL" options:NSKeyValueObservingOptionNew context:nil];
+ 
+
+#pragma mark 加载本地代码测试
+    
 //    NSString *path=[[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
 //    NSString *htmlString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
 //    [self.webView loadHTMLString:htmlString baseURL:[NSURL URLWithString:path]];
-    
-    
 //     //以下为测试代码
 //     self.testArr=[NSArray arrayWithObjects:@"http://www.sina.cn",@"http://www.baidu.com",@"http://www.apple.com",@"http://www.imooc.com",nil];
 //     self.timer=[NSTimer timerWithTimeInterval:10.0 target:self selector:@selector(loadNewUrl) userInfo:nil repeats:YES];
@@ -166,17 +166,12 @@
 //     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     
 }
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    id oldName = [change objectForKey:NSKeyValueChangeOldKey];
-    NSLog(@"oldName----------%@",oldName);
-    id newName = [change objectForKey:NSKeyValueChangeNewKey];
-    NSLog(@"newName-----------%@",newName);
-  //  [self.webView stopLoading];
-    //当界面要消失的时候,移除kvo
-    //    [object removeObserver:self forKeyPath:@"name"];
-}
+
 -(void)closeCurrent
 {
+#warning 不移除的话 内存无法释放
+    [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"GongrongAppModel"];
+    
     if (self.navigationController) {
     [self.navigationController popViewControllerAnimated:YES];
     }
@@ -227,19 +222,7 @@
     self.webView.navigationDelegate = nil;
     [self.webView.configuration.userContentController removeScriptMessageHandlerForName:@"GongrongAppModel"];
 }
-#pragma mark 获取位置信息
--(NSMutableDictionary *)getLocation
-{
-    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
-    GDMapManager *manager=[GDMapManager shareInstance];
-    [manager getLocation];
-    if (manager.strlongitude.length>0) {
-    [dic setObject:manager.strlatitude forKey:@"latitude"];
-    [dic setObject:manager.strlongitude forKey:@"longitude"];
-    [dic setObject:manager.currentCity forKey:@"currentCity"];
-    }
-    return dic;
-}
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -279,27 +262,7 @@
         return;
     } ;
     [SVProgressHUD show];
-//   //清除缓存
-//    // 清除部分，可以自己设置
-//    // NSSet *websiteDataTypes= [NSSet setWithArray:types];
-//    
-//    // 清除所有
-//    NSSet *websiteDataTypes = [WKWebsiteDataStore allWebsiteDataTypes];
-//    
-//    //// Date from
-//    
-//    NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
-//    
-//    //// Execute
-//    
-//    [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
-//        
-//        // Done
-//        NSLog(@"清楚缓存完毕");
-//        
-//    }];
-   
-    
+/*
     NSMutableDictionary *cookieDic = [NSMutableDictionary dictionary];
     NSMutableString *cookieValue = [NSMutableString stringWithFormat:@""];
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -315,10 +278,10 @@
   
    
     NSLog(@"添加cookie:%@",cookieJar);
-    
+    */
     
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:self.URL];
-     [request addValue:cookieValue forHTTPHeaderField:@"Cookie"];
+   //  [request addValue:cookieValue forHTTPHeaderField:@"Cookie"];
    // NSMutableURLRequest* request =[[NSMutableURLRequest alloc]initWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20];
     request.cachePolicy=NSURLRequestReloadIgnoringLocalCacheData;
    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -359,82 +322,21 @@
 }
 
 
-/*
-- (void)webView:(WKWebView *)webView didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
-    
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        
-        NSURLCredential *card = [[NSURLCredential alloc]initWithTrust:challenge.protectionSpace.serverTrust];
-        
-        completionHandler(NSURLSessionAuthChallengeUseCredential,card);
-        
-    }
-}
- */
+
 #pragma mark 在收到响应后，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
    // NSLog(@"%s",__FUNCTION__);
     NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
-    NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
-    //读取wkwebview中的cookie 方法1
-    for (NSHTTPCookie *cookie in cookies) {
-        //        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
-        NSLog(@"wkwebview中的cookie:%@", cookie);
-        
-    }
-    /*
-    //读取wkwebview中的cookie 方法2 读取Set-Cookie字段
-    NSString *cookieString = [[response allHeaderFields] valueForKey:@"Set-Cookie"];
-    NSLog(@"wkwebview中的cookie:%@", cookieString);
-    
-    //看看存入到了NSHTTPCookieStorage了没有
-    NSHTTPCookieStorage *cookieJar2 = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    for (NSHTTPCookie *cookie in cookieJar2.cookies) {
-        NSLog(@"NSHTTPCookieStorage中的cookie%@", cookie);
-    }
-    
-    
-    
-    WKWebsiteDataStore *dataStore = [WKWebsiteDataStore defaultDataStore];
-    WKHTTPCookieStore *cookie=dataStore.httpCookieStore;
-    [cookie getAllCookies:^(NSArray<NSHTTPCookie *> * arr) {
-        NSLog(@"getAllCookies--->%@",arr);
-    }];
-    [dataStore fetchDataRecordsOfTypes:[WKWebsiteDataStore allWebsiteDataTypes]
-                     completionHandler:^(NSArray<WKWebsiteDataRecord *> * __nonnull records) {
-                         for (WKWebsiteDataRecord *record  in records)
-                         {
-                             NSLog(@"WKWebsiteDataRecord:%@",[record description]);
-                         }
-                     }];
-    */
-    /*
-    static BOOL isRequestWeb = YES;
-    if (isRequestWeb) {
-        NSHTTPURLResponse *response = nil;
-        NSURLRequest *request=webView.
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
-        if (response.statusCode == 404) {
-            // code for 404
-            [self showToast:@"页面暂时走丢了"];
-            return NO;
-        } else if (response.statusCode == 403) {
-            // code for 403
-            [self showToast:@"页面暂时走丢了"];
-            return NO;
-        }
-        else if (response.statusCode == 500) {
-            // code for 403
-            [self showToast:@"页面暂时走丢了"];
-            return NO;
-        }
-        
-        //[webView loadData:data MIMEType:@"text/html" textEncodingName:nil baseURL:[request URL]];
-        
-        isRequestWeb = NO;
-        // return YES;
-    }
-    */
+//    NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
+//     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+//    //读取wkwebview中的cookie 方法1
+//    for (NSHTTPCookie *cookie in cookies) {
+//        //        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+//        NSLog(@"wkwebview中的cookie:%@", cookie);
+//
+//    }
+
+   
     self.backLocation=nil;
     self.immediately=NO;
     self.backRefresh=NO;
@@ -455,107 +357,7 @@
         
     }
     
-  
-    /*----- 下面要做一些公共标准的处理     -------*/
-    /*
-    NSMutableArray *publicParamArr=[ConUtils formatParamWithParamStr:paramStr];//拆分参数
-    NSMutableArray *afterFillArr=[ConUtils setParamValueWithParamStr:publicParamArr];//填充本地参数
-    BOOL openNew=NO;
-    //标记参数赋值处理后决定页面规则
-    for (int i=0;i<afterFillArr.count ; i++) {
-        /*
-        NSDictionary *dic=afterFillArr[i];
-        if ([dic[@"key"] isEqualToString:webParaImmediately]) {
-            self.immediately=[dic[@"value"] isEqualToString:@"true"]?YES:NO;
-        }
-        if ([dic[@"key"] isEqualToString:webParaBackLocation]) {
-            self.backLocation=dic[@"value"];
-        }
-        if ([dic[@"key"] isEqualToString:webParaOpenNew]) {
-            openNew= [dic[@"value"] isEqualToString:@"true"]?YES:NO;
-        }
-        if ([dic[@"key"] isEqualToString:webParaBackRefresh]) {
-            self.backRefresh=[dic[@"value"] isEqualToString:@"true"]?YES:NO;
-        }
-        if ([dic[@"key"] isEqualToString:webParaMemberId]) {//判断是不是要登录
-            NSString *memberId=dic[@"value"];
-            if (memberId&&([memberId intValue]>0)) {
-                self.needLogin=NO;
-            }
-            else{
-                self.needLogin=YES;
-            }
-            self.backRefresh=[dic[@"value"] isEqualToString:@"true"]?YES:NO;
-        }
-     
-    }
-     */
-    /*
-    if (self.needLogin) {
-        
-        UserLoadViewController *loginController = [[UserLoadViewController alloc] init];
-        loginController.loginTag = YES;
-        [self.navigationController pushViewController:loginController animated:YES];
-       decisionHandler(WKNavigationResponsePolicyCancel);
-        
-    }
-     */
-    /*
-    if(openNew)
-    {
-        baseWkWebVC  *placeDetailWebViewVC=[[baseWkWebVC alloc]init];
-        placeDetailWebViewVC.hidesBottomBarWhenPushed=YES;
-        
-        NSMutableArray *paramArr=[ConUtils formatParamWithParamStr:paramStr];
-        NSMutableArray *fullArr=[ConUtils setParamValueWithParamStr:paramArr];
-        
-        NSMutableString *urlStr = [NSMutableString stringWithFormat:@"%@://%@:%@%@",webView.URL.scheme,webView.URL.host,webView.URL.port,webView.URL.path];
-        
-        [urlStr appendFormat:@"?%@",[ConUtils formatUrlParamWithParamArr:fullArr]];
-        
-        
-        [placeDetailWebViewVC setUrl:urlStr];
-        
-        //[placeDetailWebViewVC setUrl:URLAbsoluteString];
-        
-        [self.navigationController pushViewController:placeDetailWebViewVC animated:YES];
-        
-       decisionHandler(WKNavigationResponsePolicyCancel);
-    }
-     */
-    /*
-    if (!self.immediately) {
-        [self.urlsArr addObject:URLAbsoluteString];
-        //允许加载当前
-       decisionHandler(WKNavigationResponsePolicyAllow);
-    }
-    else
-    {
-        if ([self.backLocation isEqualToString:@"closeCurrent"]) {
-            [self.navigationController popViewControllerAnimated:YES];
-            decisionHandler(WKNavigationResponsePolicyCancel);
-        }
-        
-        BOOL location=NO;
-        for (int i=0; i<self.urlsArr.count; i++) {
-            NSString *str=self.urlsArr[i];
-            NSRange range=[self.backLocation rangeOfString:str];
-            
-            if (range.location!=NSNotFound) {
-                location=YES;
-                [self goBackUrl:self.backLocation andNeedRefresh:YES];
-                decisionHandler(WKNavigationResponsePolicyCancel);
-            }
-            
-        }
-        [self.urlsArr addObject:URLAbsoluteString];
-        //没有发现过往加载过某个URL 允许加载
-       decisionHandler(WKNavigationResponsePolicyAllow);
-        
-        
-    }
-
-    */
+   
     decisionHandler(WKNavigationResponsePolicyAllow);
 }
 
@@ -624,13 +426,7 @@
     [self.webView setNeedsLayout];
     self.didFinish=YES;
     
-//    [webView evaluateJavaScript:@"addParam('1')" completionHandler:^(id  result,NSError *error){
-//        NSLog(@"error%@",error);
-//        NSLog(@"result%@",result);
-//        if (!error) {
-//
-//        }
-//    }];
+
 }
 
 #pragma mark 页面加载失败时调用

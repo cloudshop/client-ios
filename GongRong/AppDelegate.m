@@ -33,7 +33,7 @@
 
 
 
-@interface AppDelegate ()<UIScrollViewDelegate,HttpRequestCommDelegate>
+@interface AppDelegate ()<UIScrollViewDelegate,HttpRequestCommDelegate,WXApiDelegate>
 @property (nonatomic,strong)NSArray *array;
 @property (nonatomic,strong)UIScrollView *scrollView;
 @property (strong,nonatomic) UIPageControl *pageControl;
@@ -48,8 +48,8 @@
     
     UIInterfaceOrientation orientation = UIInterfaceOrientationPortrait;
     [[UIApplication sharedApplication] setStatusBarOrientation:orientation];
-    [UIApplication sharedApplication];
-    
+   
+#pragma 由推送启动时 做处理
     NSURL *url = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
     if(url)
     {
@@ -72,24 +72,20 @@
     
     HomeWKWebVC *vc1=[[HomeWKWebVC alloc]init];
     
+    //直接测试支付扫描用 正式用不到
     HomeVC *Home1=[[HomeVC alloc]init];
     
-    
     baseWkWebVC *vc2=[[baseWkWebVC alloc]init];
-    NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];//@"http://cloud.eyun.online:8888/#/HomePage";
-  //  NSString *urlStr =@"http://www.grjf365.com/#/HomePage";
-//    NSString *encodedString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-//                                                                                                    (CFStringRef)urlStr,
-//                                                                                                    (CFStringRef)@"!$&'()*+,-./:;=?@_~%#[]",
-//                                                                                                    NULL,
-//                                                                                                    kCFStringEncodingUTF8));
-
+    NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];
+    //@"http://cloud.eyun.online:8888/#/HomePage";
     [vc1 setUrl:urlStr];
-    vc1.view.backgroundColor=[UIColor redColor];
-   // [vc2 setUrl:@"http://192.168.1.110:8888/#/Classify"];
+   // vc1.view.backgroundColor=[UIColor redColor];
+    
+  
     [vc2 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Classify"]];
    // [vc2 setUrl:@"http://www.baidu.com"];
    // vc2.view.backgroundColor=[UIColor greenColor];
+    
     baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
     [vc3 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Shopping"]];
    // [vc3 setUrl:@"http://192.168.1.110:8888/#/Shopping"];
@@ -98,10 +94,8 @@
     [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Mine"]];
    // [vc4 setUrl:@"http://www.grjf365.com"];
    // vc4.view.backgroundColor=[UIColor yellowColor];
-    /*
-    HomeVC *vc2=[[HomeVC alloc] init];
-    ViewController *vc3=[[ViewController alloc]init];
-     */
+   
+    
   //  UserLoadViewController *vc4=[[UserLoadViewController alloc]init];
     UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:vc1];
     nav1.navigationBarHidden=YES;
@@ -114,10 +108,6 @@
     UINavigationController *nav4=[[UINavigationController alloc]initWithRootViewController:vc4];
     nav4.navigationBarHidden=YES;
     
-    //[tBC setViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4, nil]];
-   // NSLog(@"VC1:%@VC2:%@VC3:%@VC4:%@",vc1,vc2,vc3,vc4);
-   
-   // self.window.backgroundColor=[UIColor redColor];
     MainTabBarController *tBC=[[MainTabBarController alloc]initWithViewControllers:[NSArray arrayWithObjects:nav1,nav2,nav3,nav4, nil]];
     self.window.rootViewController=tBC;
     [self.window makeKeyAndVisible];
@@ -125,12 +115,7 @@
     GDMapManager *manager=[GDMapManager shareInstance];
     [manager getLocation];
    [WGPublicData sharedInstance].roottabBarVC=tBC ;
-//    [[WGLocationManager sharedInstance] startBMKMap];
-//    
-//    [[WGLocationManager sharedInstance] startLocationByType:YES];
-//    
-   // [ConUtils createFilterListPlistFile];
-   // [[WGPublicData sharedInstance] clearLoginInfo];
+
     
 #pragma mark 初始化IQKeyboardManager
     [self setUpIQKeyBordManager];
@@ -138,7 +123,7 @@
     
 #pragma mark 极光推送 分享
     [self registerRemoteNotification];
- //   [JGManager shareInstance];
+    [JGManager shareInstance];
 
     
 #pragma mark 首次启动引导
@@ -157,6 +142,7 @@
     //公共参数请求
 //    [HttpRequestComm getCommonparamsList:self];
     
+#pragma 推送测试
     NSDictionary *userInfoTmp = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     
     if (userInfoTmp != nil)
@@ -293,8 +279,7 @@
     // [pageControl addTarget:self action:@selector(dealPageControl:) forControlEvents:UIControlEventValueChanged];
     
     [self.window addSubview:_pageControl];
-//    [self.view bringSubviewToFront:_scrollView];
-//    [self.view bringSubviewToFront:_pageControl];
+
     
 }
 -(void)dealPageControl:(UIPageControl *)pc
@@ -454,12 +439,14 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
             break;
     }
 }
+#pragma 强制更新 或者用户选择升级后 跳到AppStore中更新
 - (void)gotoVersionUpdate
 {
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]])
-    {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]];
-    }
+    
+//    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]])
+//    {
+//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]];
+//    }
 }
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.

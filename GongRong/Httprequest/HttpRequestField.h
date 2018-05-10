@@ -110,36 +110,7 @@
 #define Collect_Course @"coursetype/favorite" //收藏科目
 #define Collect_Attachment @"course/favorite" //收藏课程
 
-#define Consult_List @"consult/list"//科目评价列表
-#define Consult_Reply @"consult/reply"//发表科目评论
 
-#define Get_ExamList @"exam/list"//获取考试列表
-#define Get_examContent @"exam/load"//获取试卷内容
-#define Submit_Exam @"exam/save"//提交考试内容
-#define Get_ExamHistory @"exam/history" //考试记录列表
-
-#define Get_RorumList @"forum/list"//板块列表
-#define Get_ForumPostList @"forumpost/list"//板块下帖子列表
-#define Get_ForumDetail @"forumpost/details"//帖子详情
-#define Get_ForumTarget @"forumpost/target"//点击某一回复拉取楼主或层主至回复记录的集合
-#define Submit_Forum @"forumpost/save"//发帖
-#define Remove_Forum @"forumpost/remove" //删除帖子
-#define Get_ForumMessage @"notify/list"//消息列表 1、2级公用一个
-#define Remove_Message @"notify/remove"//论坛消息删除/标记已读
-#define Set_ReadAllMessage  @"notify/read"//全部已读
-#define Get_MyForumList @"forumpost/my_forum_post" //我的帖子列表
-#define Collect_forum  @"forumpost/favorite"//收藏某个帖子
-#define Report_forum  @"forumpost/report"//举报帖子
-#define Fourm_search @"forumpost/search" //帖子搜索接口：
-
-
-#define Get_MyCourseFavorite @"user/courseFavorite" //我的课程收藏列表
-#define Get_MyCourseTypeFavorite @"user/courseTypeFavorite"//我的科目收藏列表
-#define Get_MyForumPostFavorite @"user/forumPostFavorite"//我收藏的帖子列表
-#define Get_MyCourseDiscuss @"consult/my_consult"//我的课程讨论列表
-
-#define Get_LearningCourseType @"user/learn_coursetype"//正在学习的科目
-#define Get_LearningCourse @"user/learn_course"//正在学习的课程
 
 
 #define COMMIT_SUGGESTION @"/user/feedback.cmd" //意见反馈
@@ -189,9 +160,6 @@
 
 
 #define GET_MENTER_ITEMLIST @"/user/mentor/itemList.cmd"//获取系统服务项目列表
-#define SUBMIT_LABLE_EVALUATE @"/user/mentor/labelEvaluate.cmd"//点击娱乐导游评价标签
-#define UPDATE_SERVICEITE @"/user/mentor/upServiceItem.cmd"//	娱乐导游选择服务项目
-
 
 
 #define Order_Check @"/order/check.cmd"//订单支付前校验
@@ -223,43 +191,8 @@ enum HTTPREQUESTTAG
     WalletsUser,//获取钱包账户
     Orederdeposit,//  创建充值订单
      GetCitysList,//获取城市列表
-    ReGetVideourl ,//重新获取视频的URl
-    GetAttachmentUrl,//获取课件资源地址
-    SubmitStudyRecord ,//提交视频学习时长
-    
-    CollectCourse, //收藏科目
-    CollectAttachment , //收藏课程
-    
-    ConsultList,//科目评价列表
-    ConsultReply, //发表科目评论
-    
-    GetExamList,//获取考试列表
-    GetexamContent,//获取试卷内容
-    SubmitExam ,//提交考试内容
-    GetExamHistory, //考试记录列表
-    
-    GetRorumList,//板块列表
-    GetForumPostList ,//板块下帖子列表
-    GetForumDetail ,//帖子详情
-    GetForumTarget ,//点击某一回复拉取楼主或层主至回复记录的集合
-    SubmitForum,//发帖
-    RemoveForum, //删除帖子
-    GetForumMessage,//消息列表 1、2级公用一个
-    RemoveMessage,//论坛消息删除/标记已读
-    SetReadAllMessage,//全部已读
-    GetMyForumList, //我的帖子列表
-    Collectforum ,//收藏某个帖子
-    Reportforum,//举报帖子
-    Fourmsearch , //帖子搜索接口：
-    
-    GetMyCourseFavorite , //我的课程收藏列表
-    GetMyCourseTypeFavorite,//我的科目收藏列表
-    GetMyForumPostFavorite ,//我收藏的帖子列表
-    GetMyCourseDiscuss,//我的课程讨论列表
-    GetLearningCourseType,//正在学习的科目
-    GetLearningCourse ,//正在学习的课程
-    
    
+    
     USERUPDATEPWD,
     USERLOGOUT,
     BUSINESSLIST,
@@ -296,18 +229,7 @@ enum HTTPREQUESTTAG
     
 // new == = = = = == = = == = = = = = = = = =
     SERVERINTRODUCED,  //服务介绍
-    LISTMYBOOK, //我的订单列表
-    MENTORGETBOOKDETIAL,//娱乐导游查看订单详情
-    MEMBERGETBOOKDETIAL,//顾客查看订单详情
-    UPDATABOOKSTATUS,//预定操作
-    CIRCLEDISCUSSLIST,//朋友圈互动(评论)列表
-    CIRCLEPRAISELIST,//朋友圈互动(赞)列表
-    CIRCLEDELETE_DYN,//删除动态
-    SUBMITDISCUSSFORDYNIMIC,//评论动态
-    SUBMIT_SERVICRITEM,//提交服务权限
-    REQUEST_SERVICELIST, //请求服务权限列表
-    REQUEST_PROFIL_EDYNMIC,//请求个人或者场所动态
-    REQUEST_PROFIL_PRIVILEGE,//请求个人或者场所动态
+  
     REQUEST_DYNMICDETIAL, //动态详情
     
     

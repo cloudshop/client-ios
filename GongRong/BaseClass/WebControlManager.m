@@ -108,6 +108,7 @@
 #pragma Mark 处理关闭页面 和各种后续操作
 -(void)closeCurrentPage:(baseWkWebVC *)webVC andDic:(NSDictionary *)paramDic
 {
+   
     if (!paramDic||paramDic.allKeys.count==0) {
         [webVC.navigationController popViewControllerAnimated:YES];
     }
@@ -266,7 +267,6 @@
     [webV.webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
         NSLog(@"%@",error);
         if (!error) {
-            
         }
     }];
     return;
