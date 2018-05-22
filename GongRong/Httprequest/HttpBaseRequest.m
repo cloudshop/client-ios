@@ -115,7 +115,9 @@ static HttpBaseRequest *baseRequest ;
     NSURL *url=[NSURL URLWithString:urlStr];
     
     NSString *token=[[SharedUserDefault sharedInstance]getUserToken];
+   
     if (token) {
+        
       //  [params setObject:token forKey:@"token"];
          [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
     }

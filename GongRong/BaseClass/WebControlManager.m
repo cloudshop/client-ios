@@ -8,9 +8,11 @@
 #import "WebControlManager.h"
 #import "GDMapManager.h"
 #import <AlipaySDK/AlipaySDK.h>
+#import <WechatOpenSDK/WXApi.h>
 #import "SharedUserDefault.h"
 #import "CoderReader.h"
 #import "JGManager.h"
+#import "UserLoadViewController.h"
 
 @implementation WebControlManager
 
@@ -30,6 +32,8 @@
     if (self)
     {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aliPayCallBack:) name:@"kAliPayCallBack" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(weChatPayCallBack:) name:@"kWechatPayCallBack" object:nil];
+        
     }
      return self;
 }
@@ -41,7 +45,6 @@
             return;
         }
         if ([dic[@"func"] isEqualToString:JSFuncPayTag]) {
-           
             [self payOperation:dic];
         }
         else if ([dic[@"func"] isEqualToString:JSFuncOpenTag])
@@ -60,6 +63,14 @@
             // [self closeCurrentPage:webVC andDic:paramDic];
              [self shareOperation:paramDic];
              
+         }
+         else if ([dic[@"func"] isEqualToString:JSFuncLogisticsTag])
+         {
+             [self checkLogisticsWithDic:dic[@"param"] AndCurrentVC:webVC];
+         }
+         else if ([dic[@"func"] isEqualToString:JSFuncsetNewCity])
+         {
+             [self selectNewCityWithDic:dic[@"param"] AndCurrentVC:webVC];
          }
         else if ([dic[@"func"] isEqualToString:JSFuncScanTag])
         {
@@ -87,12 +98,24 @@
         NSString *urlStr=dic[@"URL"];
         BOOL showClose=dic[@"showClose"];
         NSMutableDictionary *publicParamDic=[ConUtils formatParamWithParamStr:urlStr];//拆分参数
+//        NSString *allTokens = dic[@"tokenStr"];
+//        if (allTokens&&allTokens.length>5) {
+//            [[SharedUserDefault sharedInstance] setUserToken:allTokens];
+//        }
+         NSRange range5 =[urlStr rangeOfString:@"login"];
+        if (range5.location!=NSNotFound) {
+            [[SharedUserDefault sharedInstance] removeUserToken];
+//            UserLoadViewController *login=[[UserLoadViewController alloc]init];
+//            [currentVC.navigationController pushViewController:login animated:YES];
+//            return;
+        }
+        
         baseWkWebVC *vc=[[baseWkWebVC alloc]init];
         vc.webDelegate=currentVC;
         if (showClose) {
             vc.showClose=YES;
         }
-        if(![[urlStr lowercaseString] hasPrefix:@"http:"]){
+        if(![[urlStr lowercaseString] hasPrefix:@"http"]){
             urlStr=[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,urlStr];
         }
          [vc setUrl:urlStr];
@@ -118,6 +141,28 @@
         BOOL refreshAll= paramDic[JSRefreshAllTag];
         int finallyIndex =[paramDic[@"finallyIndex"] intValue];
         BOOL refreshParent = paramDic[@"refreshParent"];
+        NSString *allTokens = paramDic[@"tokenStr"];
+        BOOL removeToken= paramDic[@"removeToken"];
+        if (allTokens&&allTokens.length>5) {
+             [[SharedUserDefault sharedInstance] setUserToken:allTokens];
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示"
+                                                                                     message:[NSString stringWithFormat:@"初始化成功请重启应用！"]
+                                                                              preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action) {
+                                                                  //completionHandler();
+                                                                  exit(0);
+                                                              }]];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"取消"
+                                                                style:UIAlertActionStyleCancel
+                                                              handler:^(UIAlertAction *action) {
+                                                                  //completionHandler();
+                                                                  //[self reloadWebView];
+                                                              }]];
+            [webVC presentViewController:alertController animated:YES completion:^{}];
+        }
+        
         if (backToHome) {
             [webVC.navigationController popToRootViewControllerAnimated:YES];
             
@@ -135,7 +180,9 @@
             [webVC.navigationController popToRootViewControllerAnimated:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:JSRefreshAllTag object:nil];
         }
-       
+        if (removeToken) {
+            [[SharedUserDefault sharedInstance] removeUserToken];
+        }
         if (refreshParent) {
             if (webVC.webDelegate&&[webVC respondsToSelector:@selector(backAndRefreshOld)]) {
                   [webVC.webDelegate backAndRefreshOld];
@@ -151,6 +198,7 @@
     }
     
 }
+#pragma mark 支付操作
 -(void)payOperation:(NSDictionary *)payDic
 {
     NSDictionary *dic=[NSDictionary dictionaryWithDictionary:payDic];
@@ -169,11 +217,52 @@
             // [self getAliPayBackData:resultDic];
         }];
     }
-    else
+    else if([paramDic[JSPayType] isEqualToString:JSPay_Wechat])
     {
         NSLog(@"%@",dic[JSPayType]);
+        if(!paramDic[@"orderStr"])
+        {
+            return;
+        }
+        NSString *orderStr=paramDic[@"orderStr"];
+        NSDictionary *dic =[orderStr mj_JSONObject];
+        
+        // 发起微信支付，设置参数
+        PayReq *request = [[PayReq alloc] init];
+        request.openID = [dic objectForKey:@"appid"];
+        request.partnerId = [dic objectForKey:@"partnerid"];
+        request.prepayId= [dic objectForKey:@"prepayid"];
+        //   8ced9a149b6c5b79e2bcb682092256e2
+        request.package = [dic objectForKey:@"package"];
+        request.nonceStr= [dic objectForKey:@"noncestr"];
+        
+       
+        request.timeStamp=[[dic objectForKey:@"timestamp"] intValue];//timeStamp;//[@"1526286100364" intValue];
+        request.sign = [dic objectForKey:@"sign"];
+        
+        // 调用微信
+        [WXApi sendReq:request];
     }
 }
+#pragma mark 查看物流
+-(void)checkLogisticsWithDic:(NSDictionary *)paramDic AndCurrentVC:(baseWkWebVC *)currentVC
+{
+    NSLog(@"%@",paramDic);
+    if (paramDic&&paramDic.allKeys.count>0) {
+   //NSString *urlStr= [NSString stringWithFormat:@"https://m.kuaidi100.com/index_all.html?type=%@&postid=%@",@"zhongtong",@"488211056017"];
+    NSString *urlStr= [NSString stringWithFormat:@"https://m.kuaidi100.com/index_all.html?type=%@&postid=%@",paramDic[@"LogisticsCode"],paramDic[@"LogisticsNumber"]];
+     baseWkWebVC *vc=[[baseWkWebVC alloc]init];
+     vc.webDelegate=currentVC;
+     vc.showClose=YES;
+     [vc setUrl:urlStr];
+   
+    if ( currentVC.navigationController.viewControllers.count==1) {
+        currentVC.hidesBottomBarWhenPushed=YES;
+    }
+    [currentVC.navigationController pushViewController:vc animated:YES];
+    }
+}
+#pragma mark 分享
 -(void)shareOperation:(NSDictionary *)shareDic
 {
     NSDictionary *paramDic=[NSDictionary dictionaryWithDictionary:shareDic];
@@ -202,8 +291,6 @@
         {
             return;
         }
-        
-       
     }
     else
     {
@@ -217,6 +304,21 @@
     [JSHAREService share:message handler:^(JSHAREState state, NSError *error) {
         NSLog(@"分享回调");
     }];
+}
+#pragma mark 城市选择
+-(void)selectNewCityWithDic:(NSDictionary *)paramDic AndCurrentVC:(baseWkWebVC *)currentVC
+{
+    if (!paramDic||paramDic.allKeys.count<1) {
+        return;
+    }
+    
+    NSString *finallyStr=[NSString stringWithFormat:@"%@%@%@",paramDic[@"province"],paramDic[@"city"],paramDic[@"county"]];
+    
+    GDMapManager *manager=[GDMapManager shareInstance];
+    manager.delegate=currentVC;
+    
+    [manager getLoactionWithCityName:finallyStr];
+    
 }
 -(void)evaluateJavaScript:(NSString *)operationStr
 {
@@ -271,6 +373,7 @@
     }];
     return;
 }
+#pragma mark 支付宝支付结果处理
 - (void)aliPayCallBack:(NSNotification*)notification {
     NSDictionary *result = notification.object;
     NSLog(@"result = %@", result);
@@ -310,58 +413,19 @@
         NSLog(@"%@",d);
         NSLog(@"%@",error);
     }];
-    /*
-    NSData *data = [resultStr dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    if (json == nil) {
-      //  [MBProgressHUD showTextOnly:self.superView message:@"获取支付信息错误"];
-        return;
-    }
-    
-    NSDictionary *alipay_trade_app_pay_response = json[@"alipay_trade_app_pay_response"];
-    if (alipay_trade_app_pay_response == nil) {
-      //  [MBProgressHUD showTextOnly:self.superView message:@"获取支付信息错误"];
-        return;
-    }
-    
-    NSString *out_trade_no = alipay_trade_app_pay_response[@"out_trade_no"];
-    NSString *orderID = self.orderDic[@"orderId"];
-    if (out_trade_no == nil || ![out_trade_no isEqualToString:orderID]) {
-//、、   [MBProgressHUD showTextOnly:self.superView message:@"校验支付订单号错误"];
-        return;
-    }
-    
-    //    CGFloat total_amount = [alipay_trade_app_pay_response[@"total_amount"] floatValue];
-    //    CGFloat orderPrice = [x[@"orderPrice"]  floatValue];
-    //    if (total_amount != orderPrice) {
-    //        [MBProgressHUD showTextOnly:self.superView message:@"校验支付订价格错误"];
-    //        return;
-    //    }
-    
-    NSString *seller_id = alipay_trade_app_pay_response[@"seller_id"];
-    if (seller_id == nil || ![seller_id isEqualToString:PartnerID]) {
-     //   [MBProgressHUD showTextOnly:self.superView message:@"校验收款支付宝账号错误"];
-        return;
-    }
-    
-    NSString *app_id = alipay_trade_app_pay_response[@"app_id"];
-    if (app_id == nil || ![app_id isEqualToString:AliApyAppID]) {
-    //    [MBProgressHUD showTextOnly:self.superView message:@"校验支付宝商户AppID错误"];
-        return;
-    }
-    
-    
-    NSLog(@"支付成功：%@", result);
-    [MBProgressHUD showTextOnly:self.superView message:@"支付成功"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"payOrderSucess" object:nil];
-    if (self.paySuccessSignal) {
-        [self.paySuccessSignal sendNext:self.orderDic];
-    }
-    // 通知view更新页面
-    //    [self sendReceiptAliDataToService:out_trade_no];
-     */
+   
 }
-
+#pragma mark 微信支付结果处理
+-(void)weChatPayCallBack:(NSNotification*)notification {
+    NSString *result = notification.object;
+    NSLog(@"result = %@", result);
+     baseWkWebVC *webVC=[WGPublicData sharedInstance].currentViewController;
+    NSString * JSStr=[NSString stringWithFormat:@"payStatus('%@')",result];
+    [webVC.webView evaluateJavaScript:JSStr completionHandler:^(id _Nullable d, NSError * _Nullable error) {
+        NSLog(@"%@",d);
+        NSLog(@"%@",error);
+    }];
+}
 /*
  // JS端要
  {

@@ -499,7 +499,7 @@
 - (void)initUI
 {
     _backHandleByBar = TRUE;
-    self.backgroundColor =kAppMainColor;//UIColorWithHex(0xe45252);//[UIColor whiteColor]; //RGB(101, 94, 230);
+    self.backgroundColor =[UIColor whiteColor]; //kAppMainColor;//UIColorWithHex(0xe45252);//RGB(101, 94, 230);
     //RGB(29, 39, 57);
     // 默认左侧显示返回按钮
 //    _btnBack = [[self class] createImgNaviBarBtnByImgNormal:@"back_new" imgHighlight:@"back_new" target:self action:@selector(btnBack:)];

@@ -11,14 +11,20 @@
 #import <AMapSearchKit/AMapSearchKit.h>
 #import <AMapFoundationKit/AMapFoundationKit.h>
 
+@protocol localtionDelegate <NSObject>
+-(void)newCityLocation:(NSDictionary *)locationDic;
+@end
 @interface GDMapManager : NSObject<CLLocationManagerDelegate>
+
+
 
 @property (nonatomic,strong)CLLocationManager *locationmanager;//定位服务
 @property (nonatomic,strong)NSString * currentCity;//当前城市
 @property (nonatomic,strong)NSString * strlatitude;//经度
 @property (nonatomic,strong)NSString * strlongitude;//纬度
+@property (nonatomic,assign)id<localtionDelegate>delegate;
 
 -(void)getLocation;
 +(instancetype)shareInstance;
--(NSString *)getLoactionWithCityName:(NSString *)cityName;
+-(void)getLoactionWithCityName:(NSString *)cityName;
 @end

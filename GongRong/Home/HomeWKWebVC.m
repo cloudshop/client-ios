@@ -43,11 +43,44 @@
     [self.viewNaviBar.m_btnRightSub setImage:[UIImage imageNamed:@"coderReader"] forState:UIControlStateNormal];
     [self.viewNaviBar.m_btnRightSub addTarget:self action:@selector(showCodeReader) forControlEvents:UIControlEventTouchUpInside];
     self.viewNaviBar.backgroundColor=[UIColor clearColor];//RGB(240, 240, 240);
-  
-    [self addSearch];
+   // [self testDB];
+  //  [self addSearch];
    // self.webView.frame=Rect(0, 0, ScreenWidth, ScreenHeight-TabBarHeight);
 #pragma mark 禁用原生导航
     self.viewNaviBar.hidden=YES;
+    
+}
+-(void)testDB
+{
+    
+    NSString *databaseName = @"file__0.localstorage";
+    
+    //Get Library path
+    NSArray *libraryPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
+                                                                NSUserDomainMask, YES);
+    NSString *libraryDir = [libraryPaths objectAtIndex:0];
+    
+    NSString *databasePath = [libraryDir
+                              stringByAppendingPathComponent:@"WebKit/LocalStorage/"];
+    
+    NSString *databaseFile = [databasePath
+                              stringByAppendingPathComponent:databaseName];
+    
+    BOOL webkitDb;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    webkitDb = [fileManager fileExistsAtPath:databaseFile];
+    
+    if (webkitDb) {
+//        MMWebKitLocalStorageController* wkc = [[MMWebKitLocalStorageController alloc] init];
+//        [wkc updateUserFromLocalStorage:databaseFile];
+        NSLog(@"webkitDb");
+    }
+    else
+    {
+        NSLog(@"");
+    }
     
 }
 -(void)getSMS
@@ -138,6 +171,28 @@
      [self.navigationController pushViewController:wvc animated:YES];
      */
 }
+#pragma mark 设置新城市后 查到经纬度后再返回给页面
+-(void)newCityLocation:(NSDictionary *)locationDic
+{
+    if (!locationDic) {
+        [self showToast:@"查询地区信息失败！稍后再试"];
+        return;
+    }
+    
+    GDMapManager *manager=[GDMapManager shareInstance];
+    [manager getLocation];
+    //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
+    
+    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@')",locationDic[@"longitude"],locationDic[@"latitude"]
+                     ];
+    [self.webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
+        NSLog(@"%@",error);
+        if (!error) {
+            
+        }
+    }];
+    
+}
 #pragma mark 导航栏按钮事件
 -(void)showLeftMenu
 {
@@ -177,18 +232,19 @@
 #pragma mark 页面开始加载时调用
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
     //  NSLog(@"%s",__FUNCTION__);
+    [super webView:webView didStartProvisionalNavigation:navigation];
    
 }
 #pragma mark 当内容开始返回时调用
 - (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation {
     // NSLog(@"%s",__FUNCTION__);
-   
+    [super webView:webView didCommitNavigation:navigation];
 }
 
 #pragma mark 页面加载完成之后调用
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
     //   NSLog(@"%s",__FUNCTION__);
-    
+    [super webView:webView didFinishNavigation:navigation];
     [SVProgressHUD dismiss];
    
   //覆盖父类方法
@@ -204,8 +260,37 @@
             
         }
     }];
+    
+//    NSString *storageStr=[NSString stringWithFormat:@"loadToken()"];
+//    [webView evaluateJavaScript:storageStr completionHandler:^(id  result,NSError *error){
+//        NSLog(@"storageStr error%@",error);
+//        NSLog(@"storageStr result%@",result);
+//        if (!error) {
+//            NSString *tokenStr=(NSString *)result;
+//            NSDictionary *tokenDic=[tokenStr mj_JSONObject];
+//            if ([tokenDic isKindOfClass:[NSDictionary class]]) {
+//                [self performSelector:@selector(saveToken:) withObject:tokenDic afterDelay:0.5];
+//            }
+//        }
+//        
+//    }];
 }
-
+-(void)saveToken:(NSDictionary *)dic
+{
+    NSString *tokenStr=[dic JSONString];
+    NSString *storageStr=[NSString stringWithFormat:@"saveToken(%@)",tokenStr];
+    [self.webView evaluateJavaScript:storageStr completionHandler:^(id  result,NSError *error){
+        NSLog(@"saveToken error%@",error);
+        NSLog(@"saveToken result%@",result);
+        if (!error) {
+//            NSString *tokenStr=(NSString *)result;
+//            NSDictionary *tokenDic=[tokenStr mj_JSONObject];
+//            if ([tokenDic isKindOfClass:[NSDictionary class]]) {
+//
+//            }
+        }
+    }];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

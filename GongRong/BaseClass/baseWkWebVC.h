@@ -14,6 +14,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "WKWebView+AccessoryHiding.h"
 #import "SVProgressHUD.h"
+#import "GDMapManager.h"
 
 
 

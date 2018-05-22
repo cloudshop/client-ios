@@ -7,6 +7,6 @@
 
 #import "baseWkWebVC.h"
 
-@interface HomeWKWebVC : baseWkWebVC
+@interface HomeWKWebVC : baseWkWebVC<localtionDelegate>
 
 @end

@@ -76,8 +76,9 @@
     HomeVC *Home1=[[HomeVC alloc]init];
     
     baseWkWebVC *vc2=[[baseWkWebVC alloc]init];
+   // NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/homepage/"];
     NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];
-    //@"http://cloud.eyun.online:8888/#/HomePage";
+   // NSString *urlStr= @"http://cloud.eyun.online:8888/simpleregister/storage.html";
     [vc1 setUrl:urlStr];
    // vc1.view.backgroundColor=[UIColor redColor];
     
@@ -92,12 +93,12 @@
    // vc3.view.backgroundColor=[UIColor blueColor];
     baseWkWebVC *vc4=[[baseWkWebVC alloc]init];
     [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Mine"]];
-   // [vc4 setUrl:@"http://www.grjf365.com"];
+   // [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Login"]];
    // vc4.view.backgroundColor=[UIColor yellowColor];
    
-    
+      
   //  UserLoadViewController *vc4=[[UserLoadViewController alloc]init];
-    UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:vc1];
+    UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:Home1];
     nav1.navigationBarHidden=YES;
     UINavigationController *nav2=[[UINavigationController alloc]initWithRootViewController:vc2];
     nav2.navigationBarHidden=YES;
@@ -125,6 +126,7 @@
     [self registerRemoteNotification];
     [JGManager shareInstance];
 
+    [WXApi registerApp:@"wxf177c6755716fa32" enableMTA:YES];
     
 #pragma mark 首次启动引导
     [self  cheackFirstStart];
@@ -333,7 +335,7 @@
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     
     if ([url.absoluteString rangeOfString:@"pay"].location == NSNotFound) {
-       // [JSHAREService handleOpenUrl:url];
+        [JSHAREService handleOpenUrl:url];
     }
     
     if ([url.host isEqualToString:@"safepay"]) {
@@ -344,6 +346,35 @@
         return YES;
     }
     return [WXApi handleOpenURL:url delegate:self];
+}
+-(void) onResp:(BaseResp*)resp
+{
+     NSString *strMsg = [NSString stringWithFormat:@"支付结果"];
+    NSLog(@"tbrefds");
+    switch (resp.errCode) {
+        case WXSuccess:
+            strMsg = @"success";
+            NSLog(@"支付成功－PaySuccess，retcode = %d", resp.errCode);
+           // [[NSNotificationCenter defaultCenter] postNotificationName:@"payOrderSucess" object:nil];
+            break;
+        case WXErrCodeUserCancel:
+            strMsg = @"cancel";
+            break;
+        case WXErrCodeSentFail:
+            strMsg = @"failed";
+            break;
+        case WXErrCodeAuthDeny:
+            strMsg = @"failed";
+            break;
+        case WXErrCodeUnsupport:
+            strMsg = @"failed";
+            break;
+        default:
+            strMsg = @"failed";
+            NSLog(@"错误，retcode = %d, retstr = %@", resp.errCode,resp.errStr);
+            break;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"kWechatPayCallBack" object:strMsg];
 }
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

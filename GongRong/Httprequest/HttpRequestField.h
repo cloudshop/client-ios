@@ -13,12 +13,13 @@
 #if GR_DEBUG
 
 //测试服务器地址
-//#define Web_BASEURLPATH  @"http://cloud.eyun.online:8888"
+#define Web_BASEURLPATH  @"http://cloud.eyun.online:8888"
 //#define Web_BASEURLPATH  @"http://www.grjf365.com/#/"
-//#define BASEURLPATH @"http://192.168.1.10:9080/"
-#define BASEURLPATH  @"http://cloud.eyun.online:9080/"
-//#define Web_BASEURLPATH @"http://192.168.1.110:9999"  // 建北电脑
-#define Web_BASEURLPATH  @"http://192.168.1.109:8888"//敬敬电脑
+//#define BASEURLPATH @"http://app.grjf365.com:9080/"
+#define BASEURLPATH @"http://app.grjf365.com/"
+//#define BASEURLPATH  @"http://cloud.eyun.online:9080/"
+//#define Web_BASEURLPATH @"http://192.168.1.110:1111"  // 建北电脑
+//#define Web_BASEURLPATH  @"http://192.168.1.109:8888"//敬敬电脑
 //#define BASEURLPATH  @"http://192.168.1.96:9080/"//国文电脑电脑
 
 //#define FILESERVER @"http://106.3.78.236:8086/fileserver"//图片文件服务器
@@ -34,7 +35,6 @@
 #define BASEWALLETSERVER  @"http://101.200.161.26:81/account/"
 
 #define BASEPAYSERVER  @"http://101.200.161.26:81/"
-
 #define FileImage @"http://106.3.78.236:8092/fileserver/web/"
 
 
@@ -48,7 +48,7 @@
 
 //正式服务器地址
 
-#define BASEURLPATH @"http://app.grjf365.com:9080/"
+#define BASEURLPATH @"http://app.grjf365.com/"
 //#define BASEURLPATH @"http://leifeng365.com:81"
 #define Web_BASEURLPATH  @"http://app.grjf365.com"
 //#define BASEWALLETSERVER  @"http://account.weigee.net/account/"
@@ -79,7 +79,7 @@
 #define Get_SignHistory @"signrecord/sign_of_week" //获取一周签到记录
 #define Get_RecordList @"membership_point/list"//积分明细
 #define User_type_List @"user/user_type_array"//获取用户类型列表
-#define USER_LOGIN @"auth/login" //用户登录
+#define USER_LOGIN @"api/auth/login/app" //用户登录
 
 #define USER_LOGOUT @"user/logout" //退出登入
 //#define USER_REGISTER @"/mobileUser/register.cmd" //用户注册

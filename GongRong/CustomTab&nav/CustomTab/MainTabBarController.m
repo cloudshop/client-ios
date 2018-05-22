@@ -421,7 +421,7 @@
     [WGPublicData sharedInstance].BgView=[[UIView alloc]initWithFrame:CGRectMake((ScreenWidth/2-(ScreenWidth/5)/2), 0, (ScreenWidth/5), 49)];
     [self.tabBar addSubview:[WGPublicData sharedInstance].BgView];
     [WGPublicData sharedInstance].dynamicBtn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [WGPublicData sharedInstance].dynamicBtn.frame=CGRectMake(((ScreenWidth/5)-50)/2, -1, 45, 45);
+    [WGPublicData sharedInstance].dynamicBtn.frame=CGRectMake(((ScreenWidth/5)-50)/2, 2, 45, 45);
 //    [WGPublicData sharedInstance].dynamicBtn.layer.borderWidth=2.0;
 //    [WGPublicData sharedInstance].dynamicBtn.layer.borderColor=[RGB(255, 0, 0) CGColor];
 //    [WGPublicData sharedInstance].dynamicBtn.layer.cornerRadius=25;
@@ -429,18 +429,22 @@
     [[WGPublicData sharedInstance].dynamicBtn setImage:[UIImage imageNamed:@"circleIcon"] forState:UIControlStateNormal];//PublishAny_icon
     [[WGPublicData sharedInstance].dynamicBtn addTarget:self action:@selector(setView) forControlEvents:UIControlEventTouchUpInside];
     [[WGPublicData sharedInstance].BgView addSubview:[WGPublicData sharedInstance].dynamicBtn];
-}-(void)setView
+}
+-(void)setView
 {
+    //中间扫码器
    // CoderReader *viewController = [[CoderReader alloc] init];
-    
    // viewController.hidesBottomBarWhenPushed=YES;
    // [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:viewController animated:YES];
+    
+    //显示极简注册页面的地址二维码
     baseWkWebVC * codeVC=[[baseWkWebVC alloc]init];
     [codeVC setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/myQrCode"]];
     codeVC.showClose=YES;
   //  [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:codeVC animated:YES];
     [ [WGPublicData sharedInstance].currentViewController presentViewController:codeVC animated:YES completion:nil];
     return;
+    //类似新浪 弹出操作浮层
      [WGPublicData sharedInstance].dynamicBtn.hidden=YES;
      bgView1=[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
      bgView1.userInteractionEnabled=YES;

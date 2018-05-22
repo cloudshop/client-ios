@@ -86,12 +86,12 @@
 #define     JSFuncOpenTag       @"openURL"
 #define        JSFuncCloseTag        @"closeCurrent"
 #define  JSFuncShareTag   @"share"
-//#define    @"finallyIndex"
-//#define    @"refreshParent"
-//#define    @"showClose"
+
+#define  JSFuncLogisticsTag  @"checkLogistics"
+#define  JSFuncsetNewCity    @"setNewCity"
 #define  JSFuncScanTag  @"scan"
 #define JSFuncPayTag    @"pay"
-#define  JSPayType  @"payType:"
+#define  JSPayType  @"payType"
 #define  JSPay_Wechat  @"Wechat"
 #define  JSPay_Ali  @"Ali"
 /*

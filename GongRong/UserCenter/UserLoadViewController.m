@@ -19,9 +19,9 @@
 #import "ForgetPwdViewController.h"
 #import "PhoneRegisteViewController.h"
 #import "GRRegisterVC.h"
-#import "GetuiManager.h"
+#import "JGManager.h"
 #import "TYWebVC.h"
-
+#import "PopRootWebVC.h"
 
 enum
 {
@@ -65,7 +65,7 @@ enum
   
     [self.viewNaviBar setNavBarMode:NavBarTypeLeftTitle/*NavBarTypeLeftTitleRight*/];
     //self.viewNaviBar.backgroundColor=kAppColor1;
-    [self.viewNaviBar setLogInMode];
+    //[self.viewNaviBar setLogInMode];
     self.viewNaviBar.hidden=NO;
    // self.viewNaviBar.m_btnBack.hidden=YES;
     
@@ -143,13 +143,7 @@ enum
     [accountField addTarget:self action:@selector(limitLength:) forControlEvents:UIControlEventEditingChanged];
     [phoneNBView addSubview:accountField];
     accountField.left=phoneIcon.right+8;
-   // phoneNBView.top=self.viewNaviBar.bottom+15;
-//    if (ScreenHeight==480) {
-//       phoneNBView.top=iconV.bottom+20;
-//    }
-//    else{
-//     phoneNBView.top=iconV.bottom+49;
-//    }
+ 
    
     viewStartH+=50+10;
     
@@ -187,7 +181,7 @@ enum
     viewStartH+=50+25;
     
     loadBtn = [[UIButton alloc] initWithFrame:CGRectMake(30, viewStartH, ScreenWidth-60, 40)];
-    loadBtn.backgroundColor=kAppColor1;//RGB(120, 2, 224);
+    loadBtn.backgroundColor=kAppMainColor;//RGB(120, 2, 224);
     //loadBtn.layer.cornerRadius=5;
     [loadBtn.titleLabel setFont:[UIFont systemFontOfSize:17]];
     [loadBtn setTitle:@"登  录" forState:UIControlStateNormal];
@@ -199,7 +193,7 @@ enum
     [registeBT setFrame:CGRectMake(100, 110+64, 100, 0)];
     registeBT.titleLabel.textAlignment=NSTextAlignmentLeft;
     [registeBT setTitle:@"注册账号" forState:UIControlStateNormal];
-    [registeBT setTitleColor:kAppColor1 forState:UIControlStateNormal];
+    [registeBT setTitleColor:kAppMainColor forState:UIControlStateNormal];
     [registeBT.titleLabel setFont:[UIFont systemFontOfSize:12]];
     [registeBT addTarget:self action:@selector(userRegiste:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:registeBT];
@@ -216,7 +210,7 @@ enum
     [forgetPwdBtn setFrame:CGRectMake(100, 110+64, 100, 40)];
     forgetPwdBtn.titleLabel.textAlignment=NSTextAlignmentLeft;
     [forgetPwdBtn setTitle:@"忘记密码?" forState:UIControlStateNormal];
-    [forgetPwdBtn setTitleColor:kAppColor1 forState:UIControlStateNormal];
+    [forgetPwdBtn setTitleColor:kAppMainColor forState:UIControlStateNormal];
     [forgetPwdBtn.titleLabel setFont:[UIFont systemFontOfSize:12]];
     [forgetPwdBtn addTarget:self action:@selector(forgetPassword:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:forgetPwdBtn];
@@ -404,10 +398,14 @@ enum
 - (void)forgetPassword:(id)sender
 {
 
-    ForgetPwdViewController *fvc=[[ForgetPwdViewController alloc]init];
-    fvc.forgetType=loginForget;
-    [self.navigationController pushViewController:fvc animated:YES];
+//    ForgetPwdViewController *fvc=[[ForgetPwdViewController alloc]init];
+//    fvc.forgetType=loginForget;
+//    [self.navigationController pushViewController:fvc animated:YES];
+    PopRootWebVC *vc4=[[PopRootWebVC alloc]init];
+    [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/RegisterNew"]];
+    [self.navigationController pushViewController:vc4 animated:YES];
 }
+
 
 - (void)initUserAccount
 {
@@ -513,21 +511,29 @@ enum
         }
         else
         {
+            /*
+             NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+             
+             HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
+             [dic setObject:@"admin" forKey:@"username"];
+             [dic setObject:@"admin" forKey:@"password"];
+             [request initRequestJsonComm:dic withURL:USER_LOGIN operationTag:USERLOGIN];
+             [SVProgressHUD show];
+             */
             [SVProgressHUD show];
             loadBtn.userInteractionEnabled = NO;
             [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeClear];
             HttpBaseRequest *request=[[HttpBaseRequest alloc]initWithDelegate:self];
             NSMutableDictionary *dic=[NSMutableDictionary dictionary];
-            [dic setObject:accountField.text forKey:@"phone"];
-             [dic setObject:[pwdField.text md5] forKey:@"pwd"];
+            [dic setObject:accountField.text forKey:@"username"];
+            //[dic setObject:[pwdField.text md5] forKey:@"password"];
+            [dic setObject:pwdField.text  forKey:@"password"];
+            [dic setObject:[JGManager shareInstance].registrationID forKey:@"registrationID"];//registrationID
+            [dic setObject:@"password" forKey:@"grant_type"];
+            [dic setObject:@"w1eb_app" forKey:@"client_secret"];
+            [dic setObject:@"web_app" forKey:@"client_id"];
             
-            if([GetuiManager sharedInstance].clientId.length>0&&[GetuiManager sharedInstance].deviceToken.length>0)
-            {
-                [dic setObject:[GetuiManager sharedInstance].clientId forKey:@"clientId"];//clientId
-                [dic setObject:[GetuiManager sharedInstance].deviceToken forKey:@"deviceToken"];
-            }
-            
-            [request initRequestComm:dic withURL:USER_LOGIN operationTag:USERLOGIN];
+            [request initRequestJsonComm:dic withURL:USER_LOGIN operationTag:USERLOGIN];
            // [HttpRequestComm userLogin:[accountField text] AndPassword:[pwdField text] withDelegate:self];
         }
     }
@@ -575,6 +581,7 @@ enum
     }
     return YES;
 }
+
 -(BOOL)checkUserCode
 {
     if (accountField == nil || [accountField text] == nil || [[accountField text] isEqualToString:@""])
@@ -597,8 +604,11 @@ enum
    // WGRegisterViewController *phoneRegisteCon = [[WGRegisterViewController alloc] init];
   //  PhoneRegisteViewController *pvc=[[PhoneRegisteViewController alloc]init];
     
-    GRRegisterVC *pvc=[[GRRegisterVC alloc]init];
-    [self.navigationController pushViewController:pvc animated:YES];
+  //  GRRegisterVC *pvc=[[GRRegisterVC alloc]init];
+  //  [self.navigationController pushViewController:pvc animated:YES];
+    PopRootWebVC *vc4=[[PopRootWebVC alloc]init];
+    [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Register"]];
+    [self.navigationController pushViewController:vc4 animated:YES];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -624,17 +634,28 @@ enum
            
         case USERLOGIN:{
             loadBtn.userInteractionEnabled = YES;
-            
-            
+            if ([inParam isKindOfClass:[NSDictionary class]]) {
+                [self showToast:@"登录成功"];
+                NSString *token=[inParam JSONString];
+                [[SharedUserDefault sharedInstance] setUserToken:token];
+                [[NSNotificationCenter defaultCenter] postNotificationName:JSRefreshAllTag object:nil];
+                [self.navigationController popToRootViewControllerAnimated:YES];
+                return;
+            }
+            else
+            {
+                [self showToast:@"系统错误！请稍后再试"];
+                return;
+            }
             if (res.code == 0) {
                 
                // if(loginResponse.userElement)
                 {
                     [self showToast:@"登录成功"];
-                    self.userElement=[UserElement mj_objectWithKeyValues:res.data];
-                    
-                    NSData *data=[NSKeyedArchiver archivedDataWithRootObject:self.userElement];
-                    [[SharedUserDefault sharedInstance]setUserInfo:data];
+//                    self.userElement=[UserElement mj_objectWithKeyValues:res.data];
+//
+//                    NSData *data=[NSKeyedArchiver archivedDataWithRootObject:self.userElement];
+//                    [[SharedUserDefault sharedInstance]setUserInfo:data];
                     
                     NSString *token=[res.data objectForKey:@"token"];
                     [[SharedUserDefault sharedInstance] setUserToken:token];

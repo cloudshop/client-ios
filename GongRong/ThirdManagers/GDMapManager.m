@@ -37,6 +37,7 @@ static GDMapManager * manager;
     }
     return self;
 }
+
 /* 输入提示回调. */
 - (void)onInputTipsSearchDone:(AMapInputTipsSearchRequest *)request response:(AMapInputTipsSearchResponse *)response
 {
@@ -45,41 +46,66 @@ static GDMapManager * manager;
         return;
     }
     
-   
-    
-}
-
-- (void)onGeocodeSearchDone:(AMapGeocodeSearchRequest *)request response:(AMapGeocodeSearchResponse *)response
-{
-    if (response.geocodes.count == 0)
-    {
-        return;
-    }
-    
-    //解析response获取地理信息，具体解析见 Demo
 }
 - (void)AMapSearchRequest:(id)request didFailWithError:(NSError *)error
 {
-    
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(newCityLocation:)]) {
+        [self.delegate newCityLocation:nil];
+    }
 }
--(NSString *)getLoactionWithCityName:(NSString *)cityName
+- (void)onPOISearchDone:(AMapPOISearchBaseRequest *)request response:(AMapPOISearchResponse *)response
+{
+    if (response.pois.count == 0)
+    {
+        return;
+    }
+}
+- (void)onGeocodeSearchDone:(AMapGeocodeSearchRequest *)request response:(AMapGeocodeSearchResponse *)response
+{
+    NSDictionary *dic;
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(newCityLocation:)]) {
+        if (response.geocodes.count == 0)
+        {
+            [self.delegate newCityLocation:nil];
+        }
+        else
+        {
+            AMapGeocode *code=response.geocodes[0];
+            dic=[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%f",code.location.longitude],@"longitude",[NSString stringWithFormat:@"%f",code.location.latitude],@"latitude", nil];
+            
+        }
+        //解析response获取地理信息，具体解析见 Demo
+         [self.delegate newCityLocation:dic];
+    }
+   
+}
+
+-(void)getLoactionWithCityName:(NSString *)cityName
 {
     NSString *finallyStr=@"";
     
  
-    AMapSearchAPI *nk=  [[AMapSearchAPI alloc] init];
-    nk.delegate = self;
+    self.search=  [[AMapSearchAPI alloc] init];
+    self.search.delegate = self;
     
+    /*
     AMapPOIKeywordsSearchRequest *request = [[AMapPOIKeywordsSearchRequest alloc] init];
     
     request.keywords            = @"北京大学";
     request.city                = @"北京";
     request.types               = @"高等院校";
     request.requireExtension    = YES;
+     
+      [nk AMapPOIKeywordsSearch:request];
+    */
     
-    [nk AMapPOIKeywordsSearch:request];
+    AMapGeocodeSearchRequest *geo = [[AMapGeocodeSearchRequest alloc] init];
+    geo.address = cityName;
+   
+    //self.search.cityLimit=YES;
+    [self.search AMapGeocodeSearch:geo];
     
-    return @"";
+    return ;
      
     /*
     // 根据输入的城市名和地理位置，进行地理编码
@@ -99,7 +125,7 @@ static GDMapManager * manager;
     api.delegate=self;
     [api AMapGeocodeSearch:request];
      */
-    return  finallyStr;
+    return ;
    // return nil;
 }
 -(void)getLocation

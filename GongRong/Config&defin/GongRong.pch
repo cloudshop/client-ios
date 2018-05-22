@@ -42,6 +42,20 @@
 //高德地图key
 #define GDMapKey @"076b44ad71b2b10a38afdf4eda72ace8"
 
+//微信支付
+#define kUrlWechatPay       @"https://api.mch.weixin.qq.com/pay/unifiedorder"
+// 统一下单请求参数键值
+#define WXAPPID         @"appid"            // 应用id
+#define WXMCHID         @"mch_id"           // 商户号
+#define WXNONCESTR      @"nonce_str"        // 随机字符串
+#define WXSIGN          @"sign"             // 签名
+#define WXBODY          @"body"             // 商品描述
+#define WXOUTTRADENO    @"out_trade_no"     // 商户订单号
+#define WXTOTALFEE      @"total_fee"        // 总金额
+#define WXEQUIPMENTIP   @"spbill_create_ip" // 终端IP
+#define WXNOTIFYURL     @"notify_url"       // 通知地址
+#define WXTRADETYPE     @"trade_type"       // 交易类型
+#define WXPREPAYID      @"prepay_id"        // 预支付交易会话
 
 
 #endif /* GongRong_pch */

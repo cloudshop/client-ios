@@ -713,6 +713,7 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 - (NSURLSessionDataTask *)dataTaskWithRequest:(NSURLRequest *)request
                             completionHandler:(void (^)(NSURLResponse *response, id responseObject, NSError *error))completionHandler
 {
+     NSLog(@"AFNnetwork'log:URL:%@\n参数:%@",request.URL,[[ NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding]);
     return [self dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:completionHandler];
 }
 

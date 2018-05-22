@@ -25,7 +25,6 @@
         
     if (self==[super init]) {
         
-    
     #pragma mark 极光初始化
         JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
         entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
@@ -49,11 +48,11 @@
         //    config.FacebookDisplayName = @"JShareDemo";
         
         [JSHAREService setupWithConfig:config];
-        #if GR_DEBUG
-        [JSHAREService setDebug:YES];
-        #else
+//        #if GR_DEBUG
+//        [JSHAREService setDebug:YES];
+//        #else
          [JSHAREService setDebug:NO];
-        #endif
+//        #endif
     }
     return self;
 }

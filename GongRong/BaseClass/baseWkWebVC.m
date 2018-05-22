@@ -60,9 +60,10 @@
         [config.userContentController addScriptMessageHandler:self name:@"GongrongAppModel"];
         
         //手动设置cookie  测试
-        //    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource: @"document.cookie ='accessToken=accessToken00000';document.cookie = 'refreshToken=refreshToken1111';document.cookie = 'login = 1';"injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
-     //   [config.userContentController addUserScript:cookieScript];
-
+        /*
+        WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource: @"document.cookie ='access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiIxMzQzOTE3ODc2OSIsInNjb3BlIjpbIm9wZW5pZCJdLCJleHAiOjE1MjYxMDY3NDcsImlhdCI6MTUyNjAyMDM0NywiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6ImM3NmU4M2Q4LWZkNWUtNGQwZS1hMzZkLTgxNTlmNWYwYmI4MSIsImNsaWVudF9pZCI6IndlYl9hcHAifQ.AX9IjWzz80uZZajBLjlJxwJFPZgMB85LrMnILuxOvCziKGVia6Q5dWLbiquVjk3Lhqxw6vWY0WdTeNSb_0UlZfiEsGKXiDALfY-QHZGDb39YpSSaPkwvv7N1bifdcUrBP_c88ENrpIJXi2CQCEf0lT5By0v7UQEpvpKUJTdmFPikyI6aRCMx4zIx0vXgx7j2O3VhyKzsK2cfChZxVWN8jjq2nCEn7YLwdelxs2qi5s3l69tOG7Xuig_6zk8Ytdb0M4KVfpveqvQp6pV4VE4NUl_3Py5nkgnMWuHZS5u6UAkCJdZVoEExeoMzeSAyt7nHWVQwwNnUukNFOZMyLAG7tA';document.cookie = 'refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiIxMzQzOTE3ODc2OSIsInNjb3BlIjpbIm9wZW5pZCJdLCJhdGkiOiJjNzZlODNkOC1mZDVlLTRkMGUtYTM2ZC04MTU5ZjVmMGJiODEiLCJleHAiOjE1MjY2MjUxNDcsImlhdCI6MTUyNjAyMDM0NywiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6ImIyMTA2ODRkLTkwNzItNDUwNS04MWM1LWE3ZDBhNmUxMzZkNiIsImNsaWVudF9pZCI6IndlYl9hcHAifQ.PfdOKB9rSOI7-DZvjFFa_SrS-3bbMk9m9KzKsDZbET66mSxOk8HXXUDKkC1Qap9XDBl7KSGUCzv3CDhku8lEDhEy0ur4CFsfmbD9BD2-eBvhouUN8DsUArp4Tm8zzmmVjrUgO0R5S4eaW25BoxR9w1CZp3wBT6lNvPAo_9Vb86XLqf1UJjHx3WOlEfV1zZPUiIsNgIJbSEIiAtoQ1Rf0IPGG5W3ynujrXvF9ek2luq8P9Uc3WDvrkdOFqnIdYeX-a4I0atEq5bkUw66wDYgKxQ5_uokMOxUXvB8Pl-vmbQ093VGphpi-vm92xMoZSVA0F6ayttJc6PNhoRdqqGB_1Q';document.cookie = 'expires_at = 2018-05-12T06:32:25.614Z';document.cookie = 'token_type = bearer'"injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:NO];
+        [config.userContentController addUserScript:cookieScript];
+      */
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
         self.webView.navigationDelegate = self;
         self.webView.UIDelegate=self;
@@ -101,11 +102,13 @@
     if (!self.didFinish) {
       //  [self openRequest];
     }
+    
     NSRange range =[self.URL.absoluteString rangeOfString:@"Mine"];
     NSRange range2 =[self.URL.absoluteString rangeOfString:@"Shopping"];
     NSRange range3 =[self.URL.absoluteString rangeOfString:@"Classify"];
-    NSRange range4 =[self.URL.absoluteString rangeOfString:@"HomePage"];
-    if (range.location!=NSNotFound||range2.location!=NSNotFound||range3.location!=NSNotFound||range4.location!=NSNotFound) {
+    NSRange range4 =[self.URL.absoluteString rangeOfString:@"homepage"];
+    //NSRange range5 =[self.URL.absoluteString rangeOfString:@"Login"];
+    if (range.location!=NSNotFound||range2.location!=NSNotFound||range3.location!=NSNotFound||range4.location!=NSNotFound/*||range5.location!=NSNotFound*/) {
        [self openRequest];
     }
 }
@@ -137,7 +140,7 @@
     if(self.showClose)
     {
         UIButton *closeBT=[UIButton buttonWithType:UIButtonTypeCustom];
-        closeBT.frame=Rect(10, StatusBarHeight+20, 25, 25);
+        closeBT.frame=Rect(10, StatusBarHeight+15, 25, 25);
         closeBT.backgroundColor=[UIColor clearColor];
         [closeBT setImage:[UIImage imageNamed:@"clearPhoneNBIMG"] forState:UIControlStateNormal];
         [self.view addSubview:closeBT];
@@ -150,7 +153,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadWebView) name:JSRefreshAllTag object:nil];
- 
+    
 
 #pragma mark 加载本地代码测试
     
@@ -242,6 +245,9 @@
         urlString=[NSString stringWithFormat:@"http://%@",urlString];
     }
    // urlString=[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // urlString=[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    //  urlString=[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+   
     self.URL=[NSURL URLWithString:urlString];
     [self openRequest];
 }
@@ -259,10 +265,16 @@
     
     if (![ConUtils checkUserNetwork]) {
         [self showToast:NO_NETWORK_TEXT];
-        return;
+       // return;
     } ;
     [SVProgressHUD show];
-/*
+
+    /*
+    NSMutableDictionary* cookieDictionary1 = [[NSMutableDictionary alloc]initWithObjectsAndKeys:@"{'access_token':'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiIxMzQzOTE3ODc2OSIsInNjb3BlIjpbIm9wZW5pZCJdLCJleHAiOjE1MjYxMDY3NDcsImlhdCI6MTUyNjAyMDM0NywiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6ImM3NmU4M2Q4LWZkNWUtNGQwZS1hMzZkLTgxNTlmNWYwYmI4MSIsImNsaWVudF9pZCI6IndlYl9hcHAifQ.AX9IjWzz80uZZajBLjlJxwJFPZgMB85LrMnILuxOvCziKGVia6Q5dWLbiquVjk3Lhqxw6vWY0WdTeNSb_0UlZfiEsGKXiDALfY-QHZGDb39YpSSaPkwvv7N1bifdcUrBP_c88ENrpIJXi2CQCEf0lT5By0v7UQEpvpKUJTdmFPikyI6aRCMx4zIx0vXgx7j2O3VhyKzsK2cfChZxVWN8jjq2nCEn7YLwdelxs2qi5s3l69tOG7Xuig_6zk8Ytdb0M4KVfpveqvQp6pV4VE4NUl_3Py5nkgnMWuHZS5u6UAkCJdZVoEExeoMzeSAyt7nHWVQwwNnUukNFOZMyLAG7tA','token_type':'bearer','refresh_token':'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiIxMzQzOTE3ODc2OSIsInNjb3BlIjpbIm9wZW5pZCJdLCJhdGkiOiJjNzZlODNkOC1mZDVlLTRkMGUtYTM2ZC04MTU5ZjVmMGJiODEiLCJleHAiOjE1MjY2MjUxNDcsImlhdCI6MTUyNjAyMDM0NywiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6ImIyMTA2ODRkLTkwNzItNDUwNS04MWM1LWE3ZDBhNmUxMzZkNiIsImNsaWVudF9pZCI6IndlYl9hcHAifQ.PfdOKB9rSOI7-DZvjFFa_SrS-3bbMk9m9KzKsDZbET66mSxOk8HXXUDKkC1Qap9XDBl7KSGUCzv3CDhku8lEDhEy0ur4CFsfmbD9BD2-eBvhouUN8DsUArp4Tm8zzmmVjrUgO0R5S4eaW25BoxR9w1CZp3wBT6lNvPAo_9Vb86XLqf1UJjHx3WOlEfV1zZPUiIsNgIJbSEIiAtoQ1Rf0IPGG5W3ynujrXvF9ek2luq8P9Uc3WDvrkdOFqnIdYeX-a4I0atEq5bkUw66wDYgKxQ5_uokMOxUXvB8Pl-vmbQ093VGphpi-vm92xMoZSVA0F6ayttJc6PNhoRdqqGB_1Q','expires_in':'86398','scope':'openid','iat':'1526020347','jti':'c76e83d8-fd5e-4d0e-a36d-8159f5f0bb81','expires_at':'2018-05-12T06:32:25.614Z'}",@"token", nil];;
+    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:cookieDictionary1];
+    [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+    */
+    /*
     NSMutableDictionary *cookieDic = [NSMutableDictionary dictionary];
     NSMutableString *cookieValue = [NSMutableString stringWithFormat:@""];
     NSHTTPCookieStorage *cookieJar = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -275,16 +287,15 @@
         NSString *appendString = [NSString stringWithFormat:@"%@=%@;", key, [cookieDic valueForKey:key]];
         [cookieValue appendString:appendString];
     }
-  
-   
     NSLog(@"添加cookie:%@",cookieJar);
     */
     
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:self.URL];
    //  [request addValue:cookieValue forHTTPHeaderField:@"Cookie"];
    // NSMutableURLRequest* request =[[NSMutableURLRequest alloc]initWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20];
-    request.cachePolicy=NSURLRequestReloadIgnoringLocalCacheData;
+    request.cachePolicy=NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
      [self.webView loadRequest:request];
    // });
     // [self.webView loadRequest:[NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://www.baidu.com"]]];
@@ -397,6 +408,24 @@
              [self.viewNaviBar setTitle:self.webView.title ];
         }
     }
+    /*
+    //测试 token存储
+    NSString *storageStr=[NSString stringWithFormat:@"loadToken()"];
+    [webView evaluateJavaScript:storageStr completionHandler:^(id  result,NSError *error){
+        NSLog(@"storageStr error%@",error);
+        NSLog(@"storageStr result%@",result);
+        if (!error) {
+            NSString *tokenStr=(NSString *)result;
+            NSDictionary *tokenDic=[tokenStr mj_JSONObject];
+            if ([tokenDic isKindOfClass:[NSDictionary class]]) {
+               // [self performSelector:@selector(saveToken:) withObject:tokenDic afterDelay:0.5];
+            }
+        }
+
+    }];
+    */
+    //如果本地有就设置一下
+    [self saveToken];
     NSRange range4 =[self.URL.absoluteString rangeOfString:@"login"];
     if (range4.location!=NSNotFound) {
         NSString *JSStr=[NSString stringWithFormat:@"setDeviceId('%@')",[JGManager shareInstance].registrationID];
@@ -408,6 +437,7 @@
                 }
             
             }];
+      
     }
     if(self.parameDic&&self.parameDic.allKeys.count>0)
     {
@@ -428,41 +458,87 @@
     
 
 }
-
+-(void)saveToken
+{
+   
+    NSString *tokenStr=[SharedUserDefault sharedInstance].getUserToken;
+    NSMutableString *finallyTokenStr=[[NSMutableString alloc] initWithString:@"{"];
+    if (tokenStr&&tokenStr.length>5) {
+#pragma mark 由于网页传来的和自己登录获取到的Str格式不一样  先转化一下....
+        NSDictionary *tokenDic=[tokenStr mj_JSONObject];
+        
+        if (tokenDic&&tokenDic.allKeys.count>0) {
+            NSArray *kayArr=[tokenDic allKeys];
+            for (int i=0; i<kayArr.count; i++) {
+                NSString *keyStr=kayArr[i];
+                id valueStr=tokenDic[keyStr];
+                NSString *itemStr;
+                if (![valueStr isKindOfClass:[NSString class]]) {
+                    itemStr=[NSString stringWithFormat:@"\"%@\":%@,",keyStr,valueStr];
+                }
+                else
+                {
+                    itemStr=[NSString stringWithFormat:@"\"%@\":\"%@\",",keyStr,valueStr];
+                }
+                if (i==tokenDic.allKeys.count-1) {
+                    
+                    if (![valueStr isKindOfClass:[NSString class]]) {
+                        itemStr=[NSString stringWithFormat:@"\"%@\":%@",keyStr,valueStr];
+                    }
+                    else
+                    {
+                        itemStr=[NSString stringWithFormat:@"\"%@\":\"%@\"",keyStr,valueStr];
+                    }
+                }
+                [finallyTokenStr appendString:itemStr];
+            }
+            [finallyTokenStr appendString:@"}"];
+          //  NSLog(@"finallyStr:--->%@",finallyTokenStr);
+            
+            NSString *storageStr=[NSString stringWithFormat:@"saveToken(%@)",tokenStr];
+            [self.webView evaluateJavaScript:storageStr completionHandler:^(id  result,NSError *error){
+                NSLog(@"saveToken error%@",error);
+                NSLog(@"saveToken result%@",result);
+                if (!error) {
+                    
+                }
+            }];
+        }
+    }
+}
 #pragma mark 页面加载失败时调用
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
-   // NSLog(@"%s",__FUNCTION__);
+    NSLog(@"%s-----%@",__FUNCTION__,self.URL);
    // NSLog(@"%@", error.localizedDescription);
+    if (error.code==-999) {
+        return;
+    }
     [SVProgressHUD dismiss];
-    if (error.code==-1009) {
-        UIAlertView *alt=[[UIAlertView alloc]initWithTitle:@"提示" message: [NSString stringWithFormat:@"%@稍后回来刷新",NO_NETWORK_TEXT] delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil];
-       
-        alt.tag=kAlertOnlyRefresh;
-        [alt show];
-    }
-   else if (error.code!=102) {
-        /*
-        [self.webView stopLoading];
-        [self showToast:@"页面暂时走丢了"];
-    
-    
-        if (self.navigationController.viewControllers.count==1) {
-            UIAlertView *alt=[[UIAlertView alloc]initWithTitle:@"提示" message:@"数据加载失败了,刷新试试" delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil];
-            
-             alt.tag=kAlertOnlyRefresh;
-          //  [alt show];
-           
-        }
-        else
-        {
-            UIAlertView *alt=[[UIAlertView alloc]initWithTitle:@"提示" message:@"数据加载失败了,刷新试试" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"好的",nil];
-            alt.tag=kAlertBackAndRefresh;
-          //  [alt show];
-
-        }
-         */
-    }
-    
+  //  if (error.code==-1009) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"提示"
+                                                                                 message:[NSString stringWithFormat:@"%@稍后回来刷新",NO_NETWORK_TEXT]
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *action) {
+                                                                //completionHandler();
+                                                              [self reloadWebView];
+                                                          }]];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"取消"
+                                                            style:UIAlertActionStyleCancel
+                                                          handler:^(UIAlertAction *action) {
+                                                              //completionHandler();
+                                                              //[self reloadWebView];
+                                                          }]];
+        [self presentViewController:alertController animated:YES completion:^{}];
+        
+//        UIAlertView *alt=[[UIAlertView alloc]initWithTitle:@"提示" message: [NSString stringWithFormat:@"%@稍后回来刷新",NO_NETWORK_TEXT] delegate:self cancelButtonTitle:@"好的" otherButtonTitles:nil];
+//
+//        alt.tag=kAlertOnlyRefresh;
+//        [alt show];
+//    }
+    return;
+  
 }
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -619,16 +695,26 @@
 /// 警告框
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
 {
+    if(!completionHandler)
+    {
+        completionHandler=^{
+            NSLog(@"自己的alert");
+        };
+    }
+    
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleAlert];
+    
     [alertController addAction:[UIAlertAction actionWithTitle:@"确定"
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
                                                           completionHandler();
                                                       }]];
-    
-    [self presentViewController:alertController animated:YES completion:^{}];
+    if(self.webView.height>100)
+    [self presentViewController:alertController animated:YES completion:^{
+        NSLog(@"tgefds");
+    }];
 }
 /// 输入框
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler
