@@ -13,6 +13,7 @@
 #import "CommonDef.h"
 #import "SWGVerifyResourceApi.h"
 #import "SWGProfileInfoResourceApi.h"
+#import "SharedUserDefault.h"
 
 @interface HomeWKWebVC ()
 
@@ -183,7 +184,7 @@
     [manager getLocation];
     //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
     
-    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@')",locationDic[@"longitude"],locationDic[@"latitude"]
+    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",locationDic[@"longitude"],locationDic[@"latitude"],locationDic[@"cityName"]
                      ];
     [self.webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
         NSLog(@"%@",error);
@@ -251,9 +252,17 @@
     GDMapManager *manager=[GDMapManager shareInstance];
         [manager getLocation];
     //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
-       
-    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@')",manager.strlongitude,manager.strlatitude
-                     ];
+    NSString *JSStr;
+    if (manager.strlongitude.length>1) {
+        JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",manager.strlongitude,manager.strlatitude,manager.currentCity
+                         ];
+    }
+    else
+    {
+        JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",@"116.413521",@"39.894247",@"东城区"
+               ];
+    
+    }
     [webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
         NSLog(@"%@",error);
         if (!error) {

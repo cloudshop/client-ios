@@ -76,8 +76,8 @@
     HomeVC *Home1=[[HomeVC alloc]init];
     
     baseWkWebVC *vc2=[[baseWkWebVC alloc]init];
-   // NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/homepage/"];
-    NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];
+    NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/homepage/"];
+   // NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];
    // NSString *urlStr= @"http://cloud.eyun.online:8888/simpleregister/storage.html";
     [vc1 setUrl:urlStr];
    // vc1.view.backgroundColor=[UIColor redColor];
@@ -98,7 +98,7 @@
    
       
   //  UserLoadViewController *vc4=[[UserLoadViewController alloc]init];
-    UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:Home1];
+    UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:vc1];
     nav1.navigationBarHidden=YES;
     UINavigationController *nav2=[[UINavigationController alloc]initWithRootViewController:vc2];
     nav2.navigationBarHidden=YES;

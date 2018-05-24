@@ -10,6 +10,7 @@
 #import "SJScanningView.h"
 #import "SJCameraViewController.h"
 #import "UIAlertView+SJAddtions.h"
+#import "baseWkWebVC.h"
 
 #define kIsAuthorizedString @"请在iOS - 设置 － 隐私 － 相机 中打开相机权限"
 #define kiOS8 [[UIDevice currentDevice].systemVersion integerValue]
@@ -217,13 +218,34 @@
         self.successBlock(codesString);
     }
     else{
-    NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
+        if (![codesString hasPrefix:@"http"]) {
+            UIAlertController *alt=[UIAlertController alertControllerWithTitle:@"提示" message:@"扫描结果未知" preferredStyle:UIAlertControllerStyleAlert];
+            [alt addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                [self.navigationController popViewControllerAnimated:YES];
+            }]];
+            [self presentViewController:alt animated:YES completion:nil];
+        }
+        else
+        {
+            baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
+            [vc3 setUrl:[NSString stringWithFormat:@"%@",codesString]];
+            BOOL showColse=NO;
+            if ([codesString rangeOfString:@"grpay"].location!=NSNotFound) {
+                showColse=NO;
+            }
+            else
+            {
+                showColse=YES;
+            }
+            vc3.showClose=showColse;
+            [self.navigationController pushViewController:vc3 animated:YES];
+        }
     
 //    HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
 //    [dic setObject:codesString forKey:@"content"];
 //    [request initRequestComm:dic withURL:Push_Sign operationTag:PushSign];
 //    [SVProgressHUD show];
-        [self.navigationController popViewControllerAnimated:YES];
+    //    [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

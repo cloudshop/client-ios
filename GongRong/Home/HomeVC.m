@@ -273,17 +273,17 @@
     PayReq *request = [[PayReq alloc] init];
     request.openID = @"wxf177c6755716fa32";//[dic objectForKey:@"wx951d7848326848f0"];
     request.partnerId =@"1500998061";// [dic objectForKey:@"1490382052"];
-    request.prepayId=@"wx22185243435003023b6d8ce53703591150";// [dic objectForKey:@"wx21180844339240e20e09d1f21319234061"];
+    request.prepayId=@"wx24103205684403902f8be3fc4080263141";// [dic objectForKey:@"wx21180844339240e20e09d1f21319234061"];
                     //   8ced9a149b6c5b79e2bcb682092256e2
     request.package = @"Sign=WXPay";
-    request.nonceStr= @"kFZdvoXovuYRC6dr";//[dic objectForKey:WXNONCESTR];
+    request.nonceStr= @"clkqqh3DaBt4BuEx";//[dic objectForKey:WXNONCESTR];
     
     // 将当前时间转化成时间戳
     NSDate *datenow = [NSDate date];
     NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
     UInt32 timeStamp =[timeSp intValue];
-    request.timeStamp=[@"1526986363" intValue];//timeStamp;//[@"1526286100364" intValue];
-    request.sign = @"E15BADAE90AD5223B7E5C09DDA60D2C1";
+    request.timeStamp=[@"1527129134" intValue];//timeStamp;//[@"1526286100364" intValue];
+    request.sign = @"DDAE735B459CB2CD802F36CDF88853AD";
     
     // 签名加密
 //    WechatSignAdaptor *md5 = [[WechatSignAdaptor alloc] init];

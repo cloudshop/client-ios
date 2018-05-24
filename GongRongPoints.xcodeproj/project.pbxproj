@@ -55,7 +55,6 @@
 		3C5BB5852056916C0099B3E2 /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C5BB583205691690099B3E2 /* AlipaySDK.framework */; };
 		3C5BB5862056916C0099B3E2 /* AlipaySDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3C5BB5842056916B0099B3E2 /* AlipaySDK.bundle */; };
 		3C5BB5892057B0A30099B3E2 /* JGManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C5BB5882057B0A30099B3E2 /* JGManager.m */; };
-		3C5BB58B2057BD570099B3E2 /* test.html in Resources */ = {isa = PBXBuildFile; fileRef = 3C5BB58A2057BD560099B3E2 /* test.html */; };
 		3C5DB98D207DB1D500D6B4DE /* WebControlManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C5DB98C207DB1D500D6B4DE /* WebControlManager.m */; };
 		3C5DB9912084DC2300D6B4DE /* guide640x1280_02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3C5DB98E2084DC2200D6B4DE /* guide640x1280_02.jpg */; };
 		3C5DB9922084DC2300D6B4DE /* guide640x1280_03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3C5DB98F2084DC2300D6B4DE /* guide640x1280_03.jpg */; };
@@ -64,7 +63,6 @@
 		3C633EE120AA8C6C0021AC09 /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C633EE020AA8C6B0021AC09 /* XMLDictionary.m */; };
 		3C70D9CF2065FCF30077E4F1 /* HomeWKWebVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C70D9CE2065FCF20077E4F1 /* HomeWKWebVC.m */; };
 		3C70D9D320663E340077E4F1 /* ClassifyVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C70D9D220663E340077E4F1 /* ClassifyVC.m */; };
-		3C70D9D5206B972E0077E4F1 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 3C70D9D4206B972D0077E4F1 /* index.html */; };
 		3CD771401FFF8E8D00B76524 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD7713F1FFF8E8D00B76524 /* AppDelegate.m */; };
 		3CD771431FFF8E8D00B76524 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD771421FFF8E8D00B76524 /* ViewController.m */; };
 		3CD771461FFF8E8D00B76524 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CD771441FFF8E8D00B76524 /* Main.storyboard */; };
@@ -320,7 +318,6 @@
 		3C5BB5842056916B0099B3E2 /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AlipaySDK.bundle; sourceTree = "<group>"; };
 		3C5BB5872057B0A30099B3E2 /* JGManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JGManager.h; sourceTree = "<group>"; };
 		3C5BB5882057B0A30099B3E2 /* JGManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JGManager.m; sourceTree = "<group>"; };
-		3C5BB58A2057BD560099B3E2 /* test.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = test.html; sourceTree = "<group>"; };
 		3C5DB98B207DB1D500D6B4DE /* WebControlManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebControlManager.h; sourceTree = "<group>"; };
 		3C5DB98C207DB1D500D6B4DE /* WebControlManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebControlManager.m; sourceTree = "<group>"; };
 		3C5DB98E2084DC2200D6B4DE /* guide640x1280_02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = guide640x1280_02.jpg; sourceTree = "<group>"; };
@@ -333,7 +330,6 @@
 		3C70D9CE2065FCF20077E4F1 /* HomeWKWebVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeWKWebVC.m; sourceTree = "<group>"; };
 		3C70D9D120663E340077E4F1 /* ClassifyVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClassifyVC.h; sourceTree = "<group>"; };
 		3C70D9D220663E340077E4F1 /* ClassifyVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClassifyVC.m; sourceTree = "<group>"; };
-		3C70D9D4206B972D0077E4F1 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		3CD7713B1FFF8E8D00B76524 /* GongRongPoints.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GongRongPoints.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CD7713E1FFF8E8D00B76524 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3CD7713F1FFF8E8D00B76524 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -1206,8 +1202,6 @@
 				3CD772841FFF92C500B76524 /* BaseViewController.m */,
 				3CD772851FFF92C500B76524 /* baseWkWebVC.h */,
 				3CD772861FFF92C500B76524 /* baseWkWebVC.m */,
-				3C5BB58A2057BD560099B3E2 /* test.html */,
-				3C70D9D4206B972D0077E4F1 /* index.html */,
 				3CD772891FFF92C500B76524 /* CustomView.h */,
 				3CD7728A1FFF92C500B76524 /* CustomView.m */,
 				3CD7728B1FFF92C500B76524 /* SVProgressHUD.h */,
@@ -1378,10 +1372,8 @@
 			files = (
 				3CFD82E620998534009F6F04 /* circleIcon.png in Resources */,
 				3C5DB9932084DC2300D6B4DE /* guide640x1280_01.jpg in Resources */,
-				3C70D9D5206B972E0077E4F1 /* index.html in Resources */,
 				3C5BB5862056916C0099B3E2 /* AlipaySDK.bundle in Resources */,
 				3CD7714B1FFF8E8D00B76524 /* LaunchScreen.storyboard in Resources */,
-				3C5BB58B2057BD570099B3E2 /* test.html in Resources */,
 				3CD771481FFF8E8D00B76524 /* Assets.xcassets in Resources */,
 				3C5DB9972084F2AF00D6B4DE /* icon.png in Resources */,
 				3C5BB56B2056291F0099B3E2 /* SJQRCode.bundle in Resources */,

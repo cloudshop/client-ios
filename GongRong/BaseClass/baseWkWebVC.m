@@ -86,7 +86,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    
 //    if (self.urlsArr.count<1) {
 //         [self openRequest];
 //    }
@@ -107,8 +106,8 @@
     NSRange range2 =[self.URL.absoluteString rangeOfString:@"Shopping"];
     NSRange range3 =[self.URL.absoluteString rangeOfString:@"Classify"];
     NSRange range4 =[self.URL.absoluteString rangeOfString:@"homepage"];
-    //NSRange range5 =[self.URL.absoluteString rangeOfString:@"Login"];
-    if (range.location!=NSNotFound||range2.location!=NSNotFound||range3.location!=NSNotFound||range4.location!=NSNotFound/*||range5.location!=NSNotFound*/) {
+    NSRange range5 =[self.URL.absoluteString rangeOfString:@"HomePage"];
+    if (range.location!=NSNotFound||range2.location!=NSNotFound||range3.location!=NSNotFound||range4.location!=NSNotFound||range5.location!=NSNotFound) {
        [self openRequest];
     }
 }

@@ -30,6 +30,7 @@ static GDMapManager * manager;
 -(instancetype)init
 {
     if (self==[super init]) {
+       
         self.services = [AMapServices sharedServices];
         self.services.apiKey = @"076b44ad71b2b10a38afdf4eda72ace8";
         self.services.enableHTTPS=NO;
@@ -71,7 +72,7 @@ static GDMapManager * manager;
         else
         {
             AMapGeocode *code=response.geocodes[0];
-            dic=[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%f",code.location.longitude],@"longitude",[NSString stringWithFormat:@"%f",code.location.latitude],@"latitude", nil];
+            dic=[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%f",code.location.longitude],@"longitude",[NSString stringWithFormat:@"%f",code.location.latitude],@"latitude",code.district,@"cityName", nil];
             
         }
         //解析response获取地理信息，具体解析见 Demo
@@ -82,22 +83,10 @@ static GDMapManager * manager;
 
 -(void)getLoactionWithCityName:(NSString *)cityName
 {
-    NSString *finallyStr=@"";
-    
  
     self.search=  [[AMapSearchAPI alloc] init];
     self.search.delegate = self;
     
-    /*
-    AMapPOIKeywordsSearchRequest *request = [[AMapPOIKeywordsSearchRequest alloc] init];
-    
-    request.keywords            = @"北京大学";
-    request.city                = @"北京";
-    request.types               = @"高等院校";
-    request.requireExtension    = YES;
-     
-      [nk AMapPOIKeywordsSearch:request];
-    */
     
     AMapGeocodeSearchRequest *geo = [[AMapGeocodeSearchRequest alloc] init];
     geo.address = cityName;
@@ -106,27 +95,7 @@ static GDMapManager * manager;
     [self.search AMapGeocodeSearch:geo];
     
     return ;
-     
-    /*
-    // 根据输入的城市名和地理位置，进行地理编码
-    // 编码请求
-    AMapGeocodeSearchRequest *request = [[AMapGeocodeSearchRequest alloc] init];
     
-    // 明确请求条件
-    request.city = cityName;
-    
-    request.address = @"";//_placeField.text;
-    
-    // 确定请求类型为编码请求
-   // request.searchType = AMapRoutePOISearchTypeATM;
-//
-//    // 让API按照请求条件进行请求返回信息（返回的信息在代理方法里）
-    AMapSearchAPI *api=[[AMapSearchAPI alloc]init];
-    api.delegate=self;
-    [api AMapGeocodeSearch:request];
-     */
-    return ;
-   // return nil;
 }
 -(void)getLocation
 {
@@ -137,8 +106,10 @@ static GDMapManager * manager;
         }
        
         _locationmanager.delegate = self;
+         //_currentCity = [NSString new];
+        
        // [_locationmanager requestAlwaysAuthorization];
-        _currentCity = [NSString new];
+       
       //  [_locationmanager requestWhenInUseAuthorization];
         if ([[[UIDevice currentDevice]systemVersion]doubleValue] >8.0){
             [_locationmanager requestWhenInUseAuthorization];
@@ -181,21 +152,23 @@ static GDMapManager * manager;
     self.strlongitude=[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
     self.strlatitude=[NSString stringWithFormat:@"%f",currentLocation.coordinate.latitude];
     //反地理编码
+   // NSString *tempcity=@"";
     [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         if (placemarks.count > 0) {
             CLPlacemark *placeMark = placemarks[0];
-            _currentCity = placeMark.locality;
-            if (!_currentCity) {
-                _currentCity = @"无法定位当前城市";
+           self.currentCity = [NSString stringWithFormat:@"%@",placeMark.locality];
+            if (!self.currentCity) {
+                self.currentCity = @"无法定位";
             }
             
             /*看需求定义一个全局变量来接收赋值*/
             NSLog(@"----%@",placeMark.country);//当前国家
-            NSLog(@"%@",_currentCity);//当前的城市
+            NSLog(@"%@",self.currentCity);//当前的城市
            
-            
         }
     }];
     
+    
 }
+
 @end
