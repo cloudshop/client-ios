@@ -276,18 +276,38 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info; {
     UIImage *pickerImage= [info objectForKey:UIImagePickerControllerOriginalImage];
     NSString *resultString = nil;
+    [picker dismissViewControllerAnimated:YES completion:^{
+        //self.isLoad = NO;
+    }];
+    
     if (kiOS8 >= 8.0) {
         resultString = [self.cameraController readAlbumQRCodeImage:pickerImage];
         if (self.successBlock) {
             self.successBlock(resultString);
         }
         else{
-            NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
-            
-            HttpBaseRequest *request=[[HttpBaseRequest alloc] initWithDelegate:self];
-            [dic setObject:resultString forKey:@"content"];
-            [request initRequestComm:dic withURL:Push_Sign operationTag:PushSign];
-            [SVProgressHUD show];
+            if (![resultString hasPrefix:@"http"]) {
+                UIAlertController *alt=[UIAlertController alertControllerWithTitle:@"提示" message:@"扫描结果未知" preferredStyle:UIAlertControllerStyleAlert];
+                [alt addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+                    [self.navigationController popViewControllerAnimated:YES];
+                }]];
+                [self presentViewController:alt animated:YES completion:nil];
+            }
+            else
+            {
+                baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
+                [vc3 setUrl:[NSString stringWithFormat:@"%@",resultString]];
+                BOOL showColse=NO;
+                if ([resultString rangeOfString:@"grpay"].location!=NSNotFound) {
+                    showColse=NO;
+                }
+                else
+                {
+                    showColse=YES;
+                }
+                vc3.showClose=showColse;
+                [self.navigationController pushViewController:vc3 animated:YES];
+        }
         }
     }
 }

@@ -50,9 +50,10 @@ static GDMapManager * manager;
 }
 - (void)AMapSearchRequest:(id)request didFailWithError:(NSError *)error
 {
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(newCityLocation:)]) {
-        [self.delegate newCityLocation:nil];
-    }
+   // if (self.delegate&&[self.delegate respondsToSelector:@selector(newCityLocation:)]) {
+       // [self.delegate newCityLocation:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didSelectCity object:nil];
+   // }
 }
 - (void)onPOISearchDone:(AMapPOISearchBaseRequest *)request response:(AMapPOISearchResponse *)response
 {
@@ -64,10 +65,12 @@ static GDMapManager * manager;
 - (void)onGeocodeSearchDone:(AMapGeocodeSearchRequest *)request response:(AMapGeocodeSearchResponse *)response
 {
     NSDictionary *dic;
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(newCityLocation:)]) {
+   // if (self.delegate&&[self.delegate respondsToSelector:@selector(newCityLocation:)]) {
         if (response.geocodes.count == 0)
         {
-            [self.delegate newCityLocation:nil];
+            //[self.delegate newCityLocation:nil];
+            // [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didSelectCity object:nil];
+            dic=nil;
         }
         else
         {
@@ -76,8 +79,9 @@ static GDMapManager * manager;
             
         }
         //解析response获取地理信息，具体解析见 Demo
-         [self.delegate newCityLocation:dic];
-    }
+       //  [self.delegate newCityLocation:dic];
+         [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didSelectCity object:dic];
+  //  }
    
 }
 

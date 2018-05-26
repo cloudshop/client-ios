@@ -16,7 +16,10 @@
 #import "SharedUserDefault.h"
 
 @interface HomeWKWebVC ()
-
+//@property (nonatomic,assign)BOOL didSelectCity;
+@property (nonatomic,strong)NSString *jingStr;
+@property (nonatomic,strong)NSString *weiStr;
+@property (nonatomic,strong)NSString *cityStr;
 @end
 
 @implementation HomeWKWebVC
@@ -49,7 +52,7 @@
    // self.webView.frame=Rect(0, 0, ScreenWidth, ScreenHeight-TabBarHeight);
 #pragma mark 禁用原生导航
     self.viewNaviBar.hidden=YES;
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCityLocation:) name:kNotification_didSelectCity object:nil];
 }
 -(void)testDB
 {
@@ -173,18 +176,23 @@
      */
 }
 #pragma mark 设置新城市后 查到经纬度后再返回给页面
--(void)newCityLocation:(NSDictionary *)locationDic
+-(void)newCityLocation:(NSNotification *)locationDic
 {
-    if (!locationDic) {
+    NSDictionary *dic=locationDic.object;
+    
+    if (!dic||![dic isKindOfClass:[NSDictionary class]]) {
         [self showToast:@"查询地区信息失败！稍后再试"];
         return;
     }
     
+    self.jingStr=dic[@"longitude"];
+    self.weiStr=dic[@"latitude"];
+    self.cityStr=dic[@"cityName"];
     GDMapManager *manager=[GDMapManager shareInstance];
     [manager getLocation];
     //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
     
-    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",locationDic[@"longitude"],locationDic[@"latitude"],locationDic[@"cityName"]
+    NSString *JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",dic[@"longitude"],dic[@"latitude"],dic[@"cityName"]
                      ];
     [self.webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
         NSLog(@"%@",error);
@@ -248,28 +256,44 @@
     [super webView:webView didFinishNavigation:navigation];
     [SVProgressHUD dismiss];
    
-  //覆盖父类方法
-    GDMapManager *manager=[GDMapManager shareInstance];
-        [manager getLocation];
-    //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
-    NSString *JSStr;
-    if (manager.strlongitude.length>1) {
-        JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",manager.strlongitude,manager.strlatitude,manager.currentCity
-                         ];
+    if (self.cityStr.length<1) {
+          //覆盖父类方法
+            GDMapManager *manager=[GDMapManager shareInstance];
+                [manager getLocation];
+            //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
+            NSString *JSStr;
+            if (manager.strlongitude.length>1) {
+                JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",manager.strlongitude,manager.strlatitude,manager.currentCity
+                                 ];
+            }
+            else
+            {
+                JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",@"116.413521",@"39.894247",@"东城区"
+                       ];
+            
+            }
+            [webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
+                NSLog(@"%@",error);
+                if (!error) {
+                    
+                }
+            }];
     }
     else
     {
-        JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",@"116.413521",@"39.894247",@"东城区"
-               ];
-    
+        NSString *JSStr;
+       
+        JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",self.jingStr,self.weiStr,self.cityStr
+                   ];
+        
+        
+        [webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
+            NSLog(@"%@",error);
+            if (!error) {
+                
+            }
+        }];
     }
-    [webView evaluateJavaScript:JSStr completionHandler:^(id  result,NSError *error){
-        NSLog(@"%@",error);
-        if (!error) {
-            
-        }
-    }];
-    
 //    NSString *storageStr=[NSString stringWithFormat:@"loadToken()"];
 //    [webView evaluateJavaScript:storageStr completionHandler:^(id  result,NSError *error){
 //        NSLog(@"storageStr error%@",error);

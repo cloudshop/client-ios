@@ -98,9 +98,7 @@
     {
         self.tabBarController.tabBar.hidden=YES;
     }
-    if (!self.didFinish) {
-      //  [self openRequest];
-    }
+    
     
     NSRange range =[self.URL.absoluteString rangeOfString:@"Mine"];
     NSRange range2 =[self.URL.absoluteString rangeOfString:@"Shopping"];
@@ -109,6 +107,9 @@
     NSRange range5 =[self.URL.absoluteString rangeOfString:@"HomePage"];
     if (range.location!=NSNotFound||range2.location!=NSNotFound||range3.location!=NSNotFound||range4.location!=NSNotFound||range5.location!=NSNotFound) {
        [self openRequest];
+//        if (!self.didFinish) {
+//              [self openRequest];
+//        }
     }
 }
 -(void)viewDidAppear:(BOOL)animated

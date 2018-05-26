@@ -473,11 +473,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 #pragma 强制更新 或者用户选择升级后 跳到AppStore中更新
 - (void)gotoVersionUpdate
 {
-    
-//    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]])
-//    {
-//        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]];
-//    }
+    //https://itunes.apple.com/cn/app/wei-ge/id1377717385?mt=8
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1377717385?mt=8"/*_versionCheckElement.downLoadUrl*/]])
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/wei-ge/id1099079540?mt=8"/*_versionCheckElement.downLoadUrl*/]];
+    }
 }
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.

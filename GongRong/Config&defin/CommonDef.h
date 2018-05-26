@@ -64,6 +64,8 @@
 
 #define UPDATE_UNREAD_MESSAGE @"updateUnreadMessage"
 
+#define kNotification_didSelectCity @"didSelectedNewCity"
+
 // 登陆 注销登录通知
 #define kLoginSuccessNotification @"kLoginSuccessNotification"
 #define kLoginOutNotification @"kLoginOutNotification"
