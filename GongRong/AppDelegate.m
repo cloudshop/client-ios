@@ -349,6 +349,9 @@
 }
 -(void) onResp:(BaseResp*)resp
 {
+    if ([resp isKindOfClass:[PayResp class]]) {
+        
+    
      NSString *strMsg = [NSString stringWithFormat:@"支付结果"];
     NSLog(@"tbrefds");
     switch (resp.errCode) {
@@ -375,6 +378,35 @@
             break;
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"kWechatPayCallBack" object:strMsg];
+    }
+    else if([resp isKindOfClass:[SendAuthResp class]])
+    {
+        NSString *strMsg = [NSString stringWithFormat:@"授权结果"];
+        switch (resp.errCode) {
+            case WXSuccess:
+                strMsg = @"success";
+                NSLog(@"支付成功－PaySuccess，retcode = %d", resp.errCode);
+                // [[NSNotificationCenter defaultCenter] postNotificationName:@"payOrderSucess" object:nil];
+                break;
+            case WXErrCodeUserCancel:
+                strMsg = @"cancel";
+                break;
+            case WXErrCodeSentFail:
+                strMsg = @"failed";
+                break;
+            case WXErrCodeAuthDeny:
+                strMsg = @"failed";
+                break;
+            case WXErrCodeUnsupport:
+                strMsg = @"failed";
+                break;
+            default:
+                strMsg = @"failed";
+                NSLog(@"错误，retcode = %d, retstr = %@", resp.errCode,resp.errStr);
+                break;
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"kWechatPayCallBack" object:strMsg];
+    }
 }
 - (void)application:(UIApplication *)application
 didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

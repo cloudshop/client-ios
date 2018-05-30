@@ -155,6 +155,7 @@ static GDMapManager * manager;
     NSLog(@"%f,%f",currentLocation.coordinate.latitude,currentLocation.coordinate.longitude);
     self.strlongitude=[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
     self.strlatitude=[NSString stringWithFormat:@"%f",currentLocation.coordinate.latitude];
+    self.currentCity=@"";
     //反地理编码
    // NSString *tempcity=@"";
     [geoCoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {

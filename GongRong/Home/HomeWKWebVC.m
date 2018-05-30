@@ -262,7 +262,7 @@
                 [manager getLocation];
             //    NSString *ytttt=[[GDMapManager shareInstance] getLoactionWithCityName:@""];
             NSString *JSStr;
-            if (manager.strlongitude.length>1) {
+            if (manager.currentCity.length>1) {
                 JSStr=[NSString stringWithFormat:@"GeographicalLocation('%@','%@','%@')",manager.strlongitude,manager.strlatitude,manager.currentCity
                                  ];
             }

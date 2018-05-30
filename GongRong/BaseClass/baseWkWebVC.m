@@ -293,7 +293,7 @@
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:self.URL];
    //  [request addValue:cookieValue forHTTPHeaderField:@"Cookie"];
    // NSMutableURLRequest* request =[[NSMutableURLRequest alloc]initWithURL:self.URL cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:20];
-    request.cachePolicy=NSURLRequestReloadIgnoringLocalAndRemoteCacheData;
+    request.cachePolicy=NSURLRequestUseProtocolCachePolicy;
    // dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
      [self.webView loadRequest:request];

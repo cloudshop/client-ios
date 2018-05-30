@@ -267,7 +267,15 @@
     
 //    [self jumpToWxPayWithPrice:@"0.01"];
 //    return ;
-    
+    /*
+    if ([WXApi isWXAppInstalled]) {
+        SendAuthReq *req=[[SendAuthReq alloc]init];
+        req.scope = @"snsapi_userinfo";
+        req.state = @"GongRong123";
+        //第三方向微信终端发送一个SendAuthReq消息结构
+        [WXApi sendReq:req];
+    }
+     */
     
     // 发起微信支付，设置参数
     PayReq *request = [[PayReq alloc] init];
@@ -284,20 +292,9 @@
     UInt32 timeStamp =[timeSp intValue];
     request.timeStamp=[@"1527129134" intValue];//timeStamp;//[@"1526286100364" intValue];
     request.sign = @"DDAE735B459CB2CD802F36CDF88853AD";
-    
-    // 签名加密
-//    WechatSignAdaptor *md5 = [[WechatSignAdaptor alloc] init];
-
-//    request.sign=[md5 createMD5SingForPay:request.openID
-//                                partnerid:request.partnerId
-//                                 prepayid:request.prepayId
-//                                  package:request.package
-//                                 noncestr:request.nonceStr
-//                                timestamp:request.timeStamp];
-//    request.sign = @"F39254AE36C85C52DB7930B5FB4C29BC";
-    
     // 调用微信
     [WXApi sendReq:request];
+     
     
     /*
     NSMutableDictionary *dic=[[NSMutableDictionary alloc]init];
