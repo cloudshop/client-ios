@@ -10,7 +10,7 @@
 
 
 #import "WGPublicData.h"
-//#import "SharedUserDefault.h"
+#import "LoginViewController.h"
 
 
 #import "CoderReader.h"
@@ -437,13 +437,22 @@
    // viewController.hidesBottomBarWhenPushed=YES;
    // [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:viewController animated:YES];
     
+    
     //显示极简注册页面的地址二维码
+    /*
     baseWkWebVC * codeVC=[[baseWkWebVC alloc]init];
     [codeVC setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/myQrCode"]];
     codeVC.showClose=YES;
   //  [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:codeVC animated:YES];
     [ [WGPublicData sharedInstance].currentViewController presentViewController:codeVC animated:YES completion:nil];
+     
+     */
+      LoginViewController *loginController = [[LoginViewController alloc]init];
+      loginController.hidesBottomBarWhenPushed=YES;
+   //   [ [WGPublicData sharedInstance].currentViewController presentViewController:loginController animated:YES completion:nil];
+     [ [WGPublicData sharedInstance].currentViewController.navigationController pushViewController:loginController animated:YES ];
     return;
+    
     //类似新浪 弹出操作浮层
      [WGPublicData sharedInstance].dynamicBtn.hidden=YES;
      bgView1=[[UIView alloc]initWithFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];

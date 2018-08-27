@@ -30,6 +30,7 @@
 
 #import "NYSegmentedControl.h"
 
+#import "SVProgressHUD.h"
 #import "MJExtension.h"
 //网络图片
 #import "UIImageView+WebCache.h"
@@ -40,6 +41,10 @@
 //
 #import "JSONModel.h"
 #import "JSONKeyMapper.h"
+
+//监控
+#import "Mcu_sdk/MCUVmsNetSDK.h"
+
 /*
  广播字段
  */
@@ -256,7 +261,89 @@ blue:((float)(hexValue & 0xFF))/255.0 alpha:1.0]
 #define RGB_TextDark                            RGB(10.0f, 10.0f, 10.0f)
 
 
+//监控
 
+//登录界面相关
+#pragma mark --登录及地址界面
+static NSTimeInterval const delayTime = 2.5;
+
+//textField允许输入的最大长度
+#define ALLOWMAXLENGTH 32
+
+#define CELL_LEFTDISTANCE 20.0f//tableview中图片离左边的距离
+//判断iphone类型
+#define IPHONE4 ([UIScreen mainScreen].bounds.size.height<568)
+// 屏幕祥光
+#define SCREEN_WIDTH_SCALE ScreenWidth/320.0
+#define SCREEN_HEIGHT_SCALE ScreenHeight/568.0
+
+#define CONTROLLER_VIEW_WIDTH self.view.frame.size.width
+#define CONTROLLER_VIEW_HEIGHT self.view.frame.size.height
+
+
+#define VIDEOVIEW_BACKGROUNDCOLOR [UIColor colorWithRed:50/255.0 green:50/255.0 blue:50/255.0 alpha:1.0]
+//tableview中分割线的颜色
+#define CELL_SEPARATOR_COLOR COLOR(240.0f,240.0f,240.0f,1.0f)
+#define TABLE_SEPARATOR_COLOR COLOR(230.0f,230.0f,230.0f,1.0f)
+
+//rgb颜色设置
+#define COLOR(R,G,B,A) [UIColor colorWithRed:R/255.0 green:G/255.0 blue:B/255.0 alpha:A]
+//背景色
+#define backGroundColor [UIColor colorWithRed:245/255.0 green:245/255.0 blue:245/255.0 alpha:1.0]
+/**
+ *  字体大小
+ */
+#define SIZE10 10.0f
+#define SIZE11 11.0f
+#define SIZE12 12.0f
+#define SIZE13 13.0f
+#define SIZE14 14.0f
+#define SIZE15 15.0f
+#define SIZE17 17.0f
+#define SIZE18 18.0f
+#define SIZE20 20.0f
+#define SIZE25 25.0f
+
+
+
+#define MSP_ADDRESS     @"MSP_8710_Address"
+#define MSP_PORT        @"MSP_871_Port"
+#define MSP_USERNAME    @"MSP_871_username"
+#define MSP_PASSWORD    @"MSP_871_password"
+#define DEFAULT_MSP_PORT @"443"
+#define PUSH_SERVER_ADDRESS @"60.191.22.218"
+#define PUSH_SERVER_PORT @"8443"
+
+//云台控制
+#define PTZ_COMMAND_ZOOM_IN             11      //焦距增大
+#define PTZ_COMMAND_ZOOM_OUT            12      //焦距减小
+#define PTZ_COMMAND_FOCUS_NEAR          13      //聚焦增大
+#define PTZ_COMMAND_FOCUS_FAR           14      //聚焦减小
+#define PTZ_COMMAND_IRIS_OPEN           15      //光圈增大
+#define PTZ_COMMAND_IRIS_CLOSE          16      //光圈减小
+
+#define PTZ_COMMAND_TILT_UP             21
+#define PTZ_COMMAND_TILT_DOWN           22
+#define PTZ_COMMAND_PAN_LEFT            23
+#define PTZ_COMMAND_PAN_RIGHT           24
+#define PTZ_COMMAND_UP_LEFT             25
+#define PTZ_COMMAND_UP_RIGHT            26
+#define PTZ_COMMAND_DOWN_LEFT           27
+#define PTZ_COMMAND_DOWN_RIGHT          28
+
+#define PTZ_COMMAND_PRESET_SET          8       //设置预置点
+#define PTZ_COMMAND_PRESET_CLEAN        9       //清除预置点
+#define PTZ_COMMAND_PRESET_GOTO         39      //调用预置点
+
+//清晰度
+#define VIDEO_QUALITY_FLUENCY           2       //流畅
+#define VIDEO_QUALITY_CLEAR             1       //标清
+#define VIDEO_QUALITY_HIGHDEFINITION    0       //高清
+
+#define WS(weakSelf) __weak __typeof(&*self)weakSelf = self;
+#define kTipAlert(_S_, ...)     [[[UIAlertView alloc] initWithTitle:@"提示" message:[NSString stringWithFormat:(_S_), ##__VA_ARGS__] delegate:nil cancelButtonTitle:@"确认" otherButtonTitles:nil] show]
+
+//监控 end
 
 
 #ifdef GR_DEBUG

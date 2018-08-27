@@ -30,8 +30,12 @@
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
 #import <UserNotifications/UserNotifications.h>
 #endif
+#pragma mark Mcu_sdk
+#import "Mcu_sdk/MCUVmsNetSDK.h"
+#import "Mcu_sdk/VideoPlaySDK.h"
 
-
+#define baseURLPath @"http://cc.sibaida.com/mobile"
+// self.webURLArr=@[@"/capture_list.html",@"/statistic_mobile.html",@"/user_info.html"];
 
 @interface AppDelegate ()<UIScrollViewDelegate,HttpRequestCommDelegate,WXApiDelegate>
 @property (nonatomic,strong)NSArray *array;
@@ -76,7 +80,7 @@
     HomeVC *Home1=[[HomeVC alloc]init];
     
     baseWkWebVC *vc2=[[baseWkWebVC alloc]init];
-    NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/homepage/"];
+    NSString *urlStr =[NSString stringWithFormat:@"%@%@",baseURLPath,@"/capture_list.html"];
    // NSString *urlStr =[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/HomePage"];
    // NSString *urlStr= @"http://cloud.eyun.online:8888/simpleregister/storage.html";
     [vc1 setUrl:urlStr];
@@ -88,11 +92,11 @@
    // vc2.view.backgroundColor=[UIColor greenColor];
     
     baseWkWebVC *vc3=[[baseWkWebVC alloc]init];
-    [vc3 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Shopping"]];
+    [vc3 setUrl:[NSString stringWithFormat:@"%@%@",baseURLPath,@"/statistic_mobile.html"]];
    // [vc3 setUrl:@"http://192.168.1.110:8888/#/Shopping"];
    // vc3.view.backgroundColor=[UIColor blueColor];
     baseWkWebVC *vc4=[[baseWkWebVC alloc]init];
-    [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Mine"]];
+    [vc4 setUrl:[NSString stringWithFormat:@"%@%@",baseURLPath,@"/user_info.html"]];
    // [vc4 setUrl:[NSString stringWithFormat:@"%@%@",Web_BASEURLPATH,@"/#/Login"]];
    // vc4.view.backgroundColor=[UIColor yellowColor];
    
@@ -117,6 +121,10 @@
     [manager getLocation];
    [WGPublicData sharedInstance].roottabBarVC=tBC ;
 
+#pragma mark  初始化Mcu_SDK
+    //初始化SDK
+    VP_InitSDK();
+    
     
 #pragma mark 初始化IQKeyboardManager
     [self setUpIQKeyBordManager];
